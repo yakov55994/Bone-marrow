@@ -607,8 +607,12 @@
         ctx.textAlign    = 'right';
 
         // Parse each source line → {text, bold}, then word-wrap
+        const imageText = generatedLink
+          ? generatedMessage.replace(generatedLink + '\n', '').replace('\n' + generatedLink, '')
+          : generatedMessage;
+
         const parsed = [];
-        for (const rawLine of generatedMessage.split('\n')) {
+        for (const rawLine of imageText.split('\n')) {
           const bold = /\*/.test(rawLine);
           const text = rawLine.replace(/\*/g, '');
           ctx.font = `${bold ? 800 : 500} ${FS}px Heebo, Arial, sans-serif`;
