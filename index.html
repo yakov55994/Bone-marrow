@@ -1,0 +1,685 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>שינוע מח עצם</title>
+  <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --navy: #0f1f3d;
+      --navy-light: #1a3260;
+      --gold: #c9a84c;
+      --gold-light: #e8c96e;
+      --gold-pale: #f5e9c8;
+      --cream: #faf8f3;
+      --white: #ffffff;
+      --text-dark: #1a1a2e;
+      --text-muted: #7a7a8c;
+      --shadow-lg: 0 20px 60px rgba(15,31,61,0.18);
+      --shadow-md: 0 8px 30px rgba(15,31,61,0.12);
+      --shadow-sm: 0 4px 15px rgba(15,31,61,0.08);
+      --radius: 20px;
+      --radius-sm: 14px;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Heebo', 'Segoe UI', Arial, sans-serif;
+      background: var(--navy);
+      min-height: 100vh;
+      padding: 0;
+      direction: rtl;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    /* Subtle background texture */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background:
+        radial-gradient(ellipse at 20% 20%, rgba(201,168,76,0.08) 0%, transparent 60%),
+        radial-gradient(ellipse at 80% 80%, rgba(26,50,96,0.6) 0%, transparent 60%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .page-wrap {
+      position: relative;
+      z-index: 1;
+      min-height: 100vh;
+      padding: 20px 16px 32px;
+    }
+
+    .container {
+      max-width: 460px;
+      margin: 0 auto;
+    }
+
+    /* ─── HEADER ─── */
+    .header {
+      text-align: center;
+      padding: 32px 24px 28px;
+      margin-bottom: 24px;
+      position: relative;
+    }
+
+    .header-banner {
+      width: 100%;
+      max-width: 420px;
+      border-radius: 16px;
+      box-shadow: var(--shadow-lg);
+      display: block;
+      margin: 0 auto 20px;
+    }
+
+    .header-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: linear-gradient(135deg, var(--gold), var(--gold-light));
+      color: var(--navy);
+      font-size: 13px;
+      font-weight: 700;
+      padding: 6px 18px;
+      border-radius: 100px;
+      margin-bottom: 14px;
+      letter-spacing: 0.5px;
+      box-shadow: 0 4px 12px rgba(201,168,76,0.35);
+    }
+
+    .header-title {
+      font-size: 30px;
+      font-weight: 900;
+      color: var(--white);
+      line-height: 1.2;
+      margin-bottom: 10px;
+      letter-spacing: -0.5px;
+    }
+
+    .header-title span {
+      color: var(--gold);
+    }
+
+    .header-quote {
+      font-size: 14px;
+      font-weight: 400;
+      color: rgba(255,255,255,0.6);
+      font-style: italic;
+      line-height: 1.6;
+    }
+
+    /* Gold divider */
+    .gold-line {
+      width: 60px;
+      height: 3px;
+      background: linear-gradient(90deg, transparent, var(--gold), transparent);
+      border-radius: 10px;
+      margin: 14px auto 0;
+    }
+
+    /* ─── CARD ─── */
+    .card {
+      background: var(--white);
+      border-radius: var(--radius);
+      padding: 28px 24px;
+      box-shadow: var(--shadow-lg);
+      margin-bottom: 20px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      right: 0;
+      left: 0;
+      height: 4px;
+      background: linear-gradient(90deg, var(--gold), var(--gold-light), var(--gold));
+    }
+
+    .card-title {
+      font-size: 16px;
+      font-weight: 800;
+      color: var(--navy);
+      margin-bottom: 22px;
+      text-align: center;
+      letter-spacing: 0.3px;
+    }
+
+    .card-title::after {
+      content: '';
+      display: block;
+      width: 40px;
+      height: 2px;
+      background: var(--gold);
+      margin: 8px auto 0;
+      border-radius: 10px;
+    }
+
+    /* ─── FIELDS ─── */
+    .field-group {
+      margin-bottom: 18px;
+    }
+
+    .field-group:last-of-type {
+      margin-bottom: 22px;
+    }
+
+    label {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--navy);
+      margin-bottom: 8px;
+      letter-spacing: 0.3px;
+      text-transform: uppercase;
+    }
+
+    .label-icon {
+      width: 26px;
+      height: 26px;
+      background: var(--gold-pale);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      flex-shrink: 0;
+    }
+
+    input[type="text"],
+    input[type="url"] {
+      width: 100%;
+      padding: 15px 18px;
+      border: 1.5px solid #e4e4f0;
+      border-radius: var(--radius-sm);
+      font-size: 15px;
+      font-family: 'Heebo', inherit;
+      font-weight: 500;
+      direction: rtl;
+      color: var(--text-dark);
+      background: var(--cream);
+      transition: border-color 0.25s, box-shadow 0.25s, background 0.25s;
+      outline: none;
+      -webkit-appearance: none;
+    }
+
+    input[type="text"]::placeholder,
+    input[type="url"]::placeholder {
+      color: #b0b0c0;
+      font-weight: 400;
+    }
+
+    input[type="text"]:focus,
+    input[type="url"]:focus {
+      border-color: var(--gold);
+      box-shadow: 0 0 0 4px rgba(201,168,76,0.12);
+      background: var(--white);
+    }
+
+    /* ─── GENERATE BUTTON ─── */
+    .btn-generate {
+      width: 100%;
+      padding: 17px;
+      background: linear-gradient(135deg, var(--navy-light) 0%, var(--navy) 100%);
+      color: var(--white);
+      border: none;
+      border-radius: var(--radius-sm);
+      font-size: 16px;
+      font-weight: 800;
+      font-family: 'Heebo', inherit;
+      cursor: pointer;
+      transition: transform 0.18s, box-shadow 0.18s;
+      box-shadow: 0 6px 24px rgba(15,31,61,0.35);
+      letter-spacing: 0.5px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .btn-generate::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(201,168,76,0.15), transparent 60%);
+    }
+
+    .btn-generate:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 30px rgba(15,31,61,0.45);
+    }
+
+    .btn-generate:active {
+      transform: translateY(0) scale(0.98);
+      box-shadow: 0 4px 12px rgba(15,31,61,0.3);
+    }
+
+    /* ─── RESULT CARD ─── */
+    .result-card {
+      display: none;
+      background: var(--white);
+      border-radius: var(--radius);
+      padding: 28px 24px;
+      box-shadow: var(--shadow-lg);
+      margin-bottom: 20px;
+      position: relative;
+      overflow: hidden;
+      animation: slideUp 0.4s cubic-bezier(0.22, 1, 0.36, 1) both;
+    }
+
+    @keyframes slideUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .result-card::before {
+      content: '';
+      position: absolute;
+      top: 0; right: 0; left: 0;
+      height: 4px;
+      background: linear-gradient(90deg, #25D366, #128C7E);
+    }
+
+    .result-card.visible {
+      display: block;
+    }
+
+    .result-label {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 16px;
+    }
+
+    .result-label::before,
+    .result-label::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: #e4e4f0;
+    }
+
+    .message-box {
+      background: linear-gradient(145deg, #f8fff8, #f0fdf4);
+      border: 1.5px solid #d1fae5;
+      border-radius: var(--radius-sm);
+      padding: 20px 18px;
+      font-size: 15.5px;
+      line-height: 2;
+      color: var(--text-dark);
+      white-space: pre-wrap;
+      word-break: break-word;
+      direction: rtl;
+      font-weight: 500;
+    }
+
+    /* ─── ACTION BUTTONS ─── */
+    .actions {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 16px;
+    }
+
+    .btn-copy {
+      width: 100%;
+      padding: 15px;
+      background: linear-gradient(135deg, var(--gold), var(--gold-light));
+      color: var(--navy);
+      border: none;
+      border-radius: var(--radius-sm);
+      font-size: 15px;
+      font-weight: 800;
+      font-family: 'Heebo', inherit;
+      cursor: pointer;
+      transition: transform 0.18s, box-shadow 0.18s;
+      box-shadow: 0 6px 20px rgba(201,168,76,0.4);
+      letter-spacing: 0.3px;
+    }
+
+    .btn-copy:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 8px 25px rgba(201,168,76,0.5);
+    }
+
+    .btn-copy:active { transform: scale(0.98); }
+
+    .btn-copy.copied {
+      background: linear-gradient(135deg, #16a085, #1abc9c);
+      color: white;
+      box-shadow: 0 6px 20px rgba(22,160,133,0.4);
+    }
+
+    .btn-whatsapp {
+      width: 100%;
+      padding: 15px;
+      background: linear-gradient(135deg, #128C7E, #25D366);
+      color: white;
+      border: none;
+      border-radius: var(--radius-sm);
+      font-size: 15px;
+      font-weight: 800;
+      font-family: 'Heebo', inherit;
+      cursor: pointer;
+      transition: transform 0.18s, box-shadow 0.18s;
+      box-shadow: 0 6px 20px rgba(37,211,102,0.4);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      text-decoration: none;
+      letter-spacing: 0.3px;
+      -webkit-appearance: none;
+    }
+
+    .btn-whatsapp:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 8px 25px rgba(37,211,102,0.5);
+    }
+
+    .btn-whatsapp:active { transform: scale(0.98); }
+
+    /* ─── FOOTER ─── */
+    footer {
+      text-align: center;
+      padding: 8px 0 4px;
+    }
+
+    .footer-text {
+      font-size: 13px;
+      color: rgba(255,255,255,0.35);
+      font-weight: 400;
+    }
+
+    .footer-heart {
+      display: inline-block;
+      color: var(--gold);
+      font-size: 16px;
+      vertical-align: middle;
+    }
+  </style>
+</head>
+<body>
+  <div class="page-wrap">
+    <div class="container">
+
+      <!-- HEADER -->
+      <div class="header">
+        <img
+          id="headerBanner"
+          src="image.jpeg"
+          alt="שינוע מח עצם"
+          class="header-banner"
+          onerror="this.style.display='none'"
+        />
+        <div class="header-badge">🧪 מבצע הצלה</div>
+        <h1 class="header-title">שינוע <span>מח עצם</span></h1>
+        <p class="header-quote">"כל המציל נפש אחת מישראל כאילו קיים עולם מלא"</p>
+        <div class="gold-line"></div>
+      </div>
+
+      <!-- FORM CARD -->
+      <div class="card">
+        <div class="card-title">יצירת הודעת גיוס</div>
+
+        <div class="field-group">
+          <label for="origin">
+            <span class="label-icon">📍</span>
+            נקודת מקור
+          </label>
+          <input type="text" id="origin" placeholder="לדוגמה: אילת שדרות התמרים" />
+        </div>
+
+        <div class="field-group">
+          <label for="destination">
+            <span class="label-icon">🏁</span>
+            נקודת יעד
+          </label>
+          <input type="text" id="destination" placeholder="לדוגמה: מודיעין עילית" />
+        </div>
+
+        <div class="field-group">
+          <label for="link">
+            <span class="label-icon">🔗</span>
+            קישור לאירוע
+          </label>
+          <input type="url" id="link" placeholder="https://yedidim.startach.io/..." />
+        </div>
+
+        <button class="btn-generate" onclick="generateMessage()">✨ &nbsp;צור הודעה עכשיו</button>
+      </div>
+
+      <!-- RESULT CARD -->
+      <div class="result-card" id="resultCard">
+        <div class="result-label">ההודעה מוכנה לשיתוף</div>
+        <div class="message-box" id="messageBox"></div>
+        <div class="actions">
+          <button class="btn-copy" id="copyBtn" onclick="copyMessage()">📋 &nbsp;העתק הודעה</button>
+          <button class="btn-whatsapp" id="whatsappShareBtn" onclick="shareWithImage()">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="white">
+              <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+            </svg>
+            שתף עם תמונה בוואטסאפ
+          </button>
+          <!-- Fallback plain WhatsApp link (text only) -->
+          <a class="btn-wa-text" id="waTextLink" href="#" target="_blank">
+            שתף טקסט בלבד (ללא תמונה)
+          </a>
+        </div>
+      </div>
+
+      <footer>
+        <p class="footer-text">מדובר בהצלת חיים &nbsp;<span class="footer-heart">🌏</span></p>
+      </footer>
+
+    </div>
+  </div>
+
+  <style>
+    /* WA text fallback link */
+    .btn-wa-text {
+      display: block;
+      text-align: center;
+      margin-top: 4px;
+      padding: 10px;
+      font-size: 13px;
+      color: rgba(255,255,255,0.45);
+      text-decoration: underline;
+      font-family: 'Heebo', inherit;
+    }
+  </style>
+
+  <script>
+    let generatedMessage = '';
+    let generatedLink = '';
+
+    const E = {
+      tube:  '\uD83E\uDDEA',
+      world: '\uD83C\uDF0F',
+      heart: '\uD83E\uDDE1',
+      clip:  '\uD83D\uDCCB',
+      check: '\u2705',
+    };
+
+    function buildMessage(origin, destination, link) {
+      return (
+        '\u05E1\u05D5\u05D2 \u05D0\u05D9\u05E8\u05D5\u05E2: \u05E9\u05D9\u05E0\u05D5\u05E2 \u05DE\u05D7 \u05E2\u05E6\u05DD ' + E.tube + '\n\n' +
+        '\u05DE\u05E0\u05E7\u05D5\u05D3\u05D4: *' + origin + '*\n' +
+        '\u05DC\u05D9\u05E2\u05D3: *' + destination + '*\n' +
+        (link ? link + '\n' : '') +
+        '\u05DB\u05DC \u05D4\u05DE\u05E6\u05D9\u05DC \u05E0\u05E4\u05E9 \u05D0\u05D7\u05EA \u05DE\u05D9\u05E9\u05E8\u05D0\u05DC \u05DB\u05D0\u05D9\u05DC\u05D5 \u05E7\u05D9\u05D9\u05DD \u05E2\u05D5\u05DC\u05DD \u05DE\u05DC\u05D0 ' + E.world + '\n' +
+        '\u05DE\u05D9 \u05D9\u05DB\u05D5\u05DC \u05DC\u05E1\u05D9\u05D9\u05E2 \u05D1\u05DE\u05E6\u05D5\u05D5\u05D4? ' + E.heart + '\n\n' +
+        '*\u05DE\u05D3\u05D5\u05D1\u05E8 \u05D1\u05D4\u05E6\u05DC\u05EA \u05D7\u05D9\u05D9\u05DD*'
+      );
+    }
+
+    function generateMessage() {
+      const origin      = document.getElementById('origin').value.trim();
+      const destination = document.getElementById('destination').value.trim();
+      const link        = document.getElementById('link').value.trim();
+
+      if (!origin || !destination) {
+        shakeInvalid(!origin ? 'origin' : 'destination');
+        return;
+      }
+
+      generatedMessage = buildMessage(origin, destination, link);
+      generatedLink = link;
+      document.getElementById('messageBox').textContent = generatedMessage;
+
+      const waText = encodeURIComponent(generatedMessage);
+      document.getElementById('waTextLink').href = 'https://wa.me/?text=' + waText;
+
+      const resultCard = document.getElementById('resultCard');
+      resultCard.classList.add('visible');
+      resultCard.style.animation = 'none';
+      requestAnimationFrame(() => {
+        resultCard.style.animation = '';
+        resultCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      });
+
+      document.getElementById('copyBtn').innerHTML = E.clip + ' \u00A0\u05D4\u05E2\u05EA\u05E7 \u05D4\u05D5\u05D3\u05E2\u05D4';
+      document.getElementById('copyBtn').classList.remove('copied');
+    }
+
+    function copyMessage() {
+      if (!generatedMessage) return;
+      const btn = document.getElementById('copyBtn');
+      const doMark = () => {
+        btn.innerHTML = E.check + ' \u00A0\u05D4\u05D5\u05E2\u05EA\u05E7 \u05D1\u05D4\u05E6\u05DC\u05D7\u05D4!';
+        btn.classList.add('copied');
+        setTimeout(() => {
+          btn.innerHTML = E.clip + ' \u00A0\u05D4\u05E2\u05EA\u05E7 \u05D4\u05D5\u05D3\u05E2\u05D4';
+          btn.classList.remove('copied');
+        }, 2500);
+      };
+      navigator.clipboard.writeText(generatedMessage).then(doMark).catch(() => {
+        const ta = document.createElement('textarea');
+        ta.value = generatedMessage;
+        ta.style.cssText = 'position:fixed;opacity:0;top:0;right:0;';
+        document.body.appendChild(ta);
+        ta.focus(); ta.select();
+        document.execCommand('copy');
+        document.body.removeChild(ta);
+        doMark();
+      });
+    }
+
+    async function shareWithImage() {
+      if (!generatedMessage) return;
+
+      try {
+        await document.fonts.ready;
+
+        const imgBlob = await fetch('image.jpeg').then(r => { if (!r.ok) throw new Error(); return r.blob(); });
+        const imgBitmap = await createImageBitmap(imgBlob);
+
+        const W = 1080;
+        const bannerH = Math.round(imgBitmap.height * (W / imgBitmap.width));
+        const PAD = 64;
+        const FS  = 42;
+        const LH  = FS * 1.85;
+
+        const canvas = document.createElement('canvas');
+        canvas.width = W;
+        canvas.height = 100;
+        const ctx = canvas.getContext('2d');
+        ctx.textBaseline = 'top';
+        ctx.direction    = 'rtl';
+        ctx.textAlign    = 'right';
+
+        // Parse each source line → {text, bold}, then word-wrap
+        const parsed = [];
+        for (const rawLine of generatedMessage.split('\n')) {
+          const bold = /\*/.test(rawLine);
+          const text = rawLine.replace(/\*/g, '');
+          ctx.font = `${bold ? 800 : 500} ${FS}px Heebo, Arial, sans-serif`;
+
+          if (!text.trim()) { parsed.push({ text: '', bold }); continue; }
+
+          const words = text.split(' ');
+          let cur = '';
+          for (const w of words) {
+            const test = cur ? cur + ' ' + w : w;
+            if (ctx.measureText(test).width > W - PAD * 2 && cur) {
+              parsed.push({ text: cur, bold });
+              cur = w;
+            } else {
+              cur = test;
+            }
+          }
+          if (cur) parsed.push({ text: cur, bold });
+        }
+
+        const textH = parsed.length * LH + PAD * 2;
+        canvas.height = bannerH + textH;
+
+        // ── Draw banner ──
+        ctx.drawImage(imgBitmap, 0, 0, W, bannerH);
+
+        // ── Text background ──
+        ctx.fillStyle = '#f5f5f0';
+        ctx.fillRect(0, bannerH, W, textH);
+
+        // Gold accent bar
+        const grd = ctx.createLinearGradient(0, 0, W, 0);
+        grd.addColorStop(0, '#c9a84c');
+        grd.addColorStop(0.5, '#e8c96e');
+        grd.addColorStop(1, '#c9a84c');
+        ctx.fillStyle = grd;
+        ctx.fillRect(0, bannerH, W, 6);
+
+        // ── Draw text lines ──
+        ctx.textBaseline = 'top';
+        ctx.direction    = 'rtl';
+        ctx.textAlign    = 'right';
+        parsed.forEach(({ text, bold }, i) => {
+          ctx.font      = `${bold ? 800 : 500} ${FS}px Heebo, Arial, sans-serif`;
+          ctx.fillStyle = bold ? '#0f1f3d' : '#2a2a3e';
+          ctx.fillText(text, W - PAD, bannerH + 6 + PAD + i * LH);
+        });
+
+        const finalBlob = await new Promise(resolve => canvas.toBlob(resolve, 'image/jpeg', 0.93));
+        const file = new File([finalBlob], 'bone-marrow.jpg', { type: 'image/jpeg' });
+
+        if (navigator.canShare && navigator.canShare({ files: [file] })) {
+          await navigator.share({ files: [file], text: generatedLink || undefined });
+          return;
+        }
+      } catch(e) { /* fall through */ }
+
+      window.location.href = 'https://wa.me/?text=' + encodeURIComponent(generatedMessage);
+    }
+
+    function shakeInvalid(id) {
+      const el = document.getElementById(id);
+      el.style.borderColor = '#e74c3c';
+      el.style.boxShadow = '0 0 0 4px rgba(231,76,60,0.12)';
+      el.focus();
+      setTimeout(() => { el.style.borderColor = ''; el.style.boxShadow = ''; }, 1800);
+    }
+
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Enter') generateMessage();
+    });
+  </script>
+</body>
+</html>
