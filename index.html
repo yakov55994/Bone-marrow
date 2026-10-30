@@ -769,6 +769,7 @@
 
     const E = {
       tube:  '\uD83E\uDDEA',
+      phone: '\uD83D\uDCF2',
       world: '\uD83C\uDF0F',
       heart: '\uD83E\uDDE1',
       clip:  '\uD83D\uDCCB',
@@ -808,11 +809,12 @@
     }
 
     function buildContactLine(contact) {
-      return '*מי שיכול לקדם לאיזור שיעלה מול ' + contact.name + ' בוואטסאפ:*\n' + whatsAppLink(contact.phone);
+      return '*' + E.phone + ' מי שיכול לקדם לאיזור שיעלה מול ' + contact.name + ' בוואטסאפ:*\n' + whatsAppLink(contact.phone);
     }
 
     function buildMessage(origin, destination, link, contact) {
       return (
+        '*״מערך השינוע מבחנות מח עצם״*\n\n' +
         'סוג אירוע: שינוע / מבחנת מח עצם\n' +
         'מיקום: ' + origin + '\n' +
         (link ? link + '\n' : '') +
