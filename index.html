@@ -808,13 +808,15 @@
       return { name, phone };
     }
 
+    const MESSAGE_TITLE = '*״מערך השינוע מבחנות מח עצם״*';
+
     function buildContactLine(contact) {
       return '*' + E.phone + ' מי שיכול לקדם לאיזור שיעלה מול ' + contact.name + ' בוואטסאפ:*\n' + whatsAppLink(contact.phone);
     }
 
     function buildMessage(origin, destination, link, contact) {
       return (
-        '*״מערך השינוע מבחנות מח עצם״*\n\n' +
+        MESSAGE_TITLE + '\n\n' +
         'סוג אירוע: שינוע / מבחנת מח עצם\n' +
         'מיקום: ' + origin + '\n' +
         (link ? link + '\n' : '') +
@@ -965,8 +967,10 @@
       ctx.textAlign    = 'right';
 
       // Parse each source line → {text, bold}, then word-wrap
-      // The contact goes in the text sent with the image, never on the image
-      const withoutContact = generatedMessage.replace('\n\n' + generatedContactLine, '');
+      // The title and contact go in the text sent with the image, never on the image
+      const withoutContact = generatedMessage
+        .replace(MESSAGE_TITLE + '\n\n', '')
+        .replace('\n\n' + generatedContactLine, '');
       const imageText = generatedLink
         ? withoutContact.replace(generatedLink + '\n', '').replace('\n' + generatedLink, '')
         : withoutContact;
@@ -1028,7 +1032,7 @@
         const file = generatedImageFile || await renderMessageImage();
 
         if (navigator.canShare && navigator.canShare({ files: [file] })) {
-          await navigator.share({ files: [file], text: [generatedLink, generatedContactLine].filter(Boolean).join('\n\n') });
+          await navigator.share({ files: [file], text: [MESSAGE_TITLE, generatedLink, generatedContactLine].filter(Boolean).join('\n\n') });
           return;
         }
       } catch(e) {
