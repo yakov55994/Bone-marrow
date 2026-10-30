@@ -762,6 +762,7 @@
   <script>
     let generatedMessage = '';
     let generatedLink = '';
+    let generatedContactLine = '';
     let generatedImageFile = null;
     let imagePreviewUrl = '';
     let imageRequestId = 0;
@@ -779,12 +780,14 @@
       sruli:  { name: 'שרוליק כץ', phone: '058-368-7905' },
     };
 
-    // Writes Israeli numbers the local way: a leading +972 would flip order inside Hebrew text
-    function formatPhone(raw) {
-      const digits = raw.replace(/\D/g, '');
-      const local = digits.startsWith('972') ? '0' + digits.slice(3).replace(/^0/, '') : digits;
-      if (/^05\d{8}$/.test(local)) return local.replace(/^(\d{3})(\d{3})(\d{4})$/, '$1-$2-$3');
-      return digits.startsWith('972') ? local : raw.trim();
+    // Israeli numbers need the country code: 050-123-4567 becomes 972501234567
+    function whatsAppLink(phone) {
+      const digits = phone.replace(/\D/g, '');
+      const number = digits.startsWith('972') ? '972' + digits.slice(3).replace(/^0/, '')
+        : digits.startsWith('0') ? '972' + digits.slice(1)
+        : /^5\d{8}$/.test(digits) ? '972' + digits
+        : digits;
+      return 'https://wa.me/' + number;
     }
 
     function getContact() {
@@ -801,7 +804,11 @@
         shakeInvalid('contactPhone');
         return null;
       }
-      return { name, phone: formatPhone(phone) };
+      return { name, phone };
+    }
+
+    function buildContactLine(contact) {
+      return '*מי שיכול לקדם לאיזור שיעלה מול ' + contact.name + ' בוואטסאפ:*\n' + whatsAppLink(contact.phone);
     }
 
     function buildMessage(origin, destination, link, contact) {
@@ -810,7 +817,7 @@
         'מיקום: ' + origin + '\n' +
         (link ? link + '\n' : '') +
         '\n*' + E.tube + ' שינוע מבחנת מח עצם ל' + destination + ' ' + E.tube + '*\n\n' +
-        '*מי שיכול לקדם לאיזור שיעלה מול ' + contact.name + ' בוואטסאפ ' + contact.phone + '*'
+        buildContactLine(contact)
       );
     }
 
@@ -832,6 +839,7 @@
 
       generatedMessage = buildMessage(origin, destination, link, contact);
       generatedLink = link;
+      generatedContactLine = buildContactLine(contact);
       document.getElementById('messageBox').textContent = generatedMessage;
 
       const waText = encodeURIComponent(generatedMessage);
@@ -947,9 +955,11 @@
       ctx.textAlign    = 'right';
 
       // Parse each source line → {text, bold}, then word-wrap
+      // The contact goes in the text sent with the image, never on the image
+      const withoutContact = generatedMessage.replace('\n\n' + generatedContactLine, '');
       const imageText = generatedLink
-        ? generatedMessage.replace(generatedLink + '\n', '').replace('\n' + generatedLink, '')
-        : generatedMessage;
+        ? withoutContact.replace(generatedLink + '\n', '').replace('\n' + generatedLink, '')
+        : withoutContact;
 
       const parsed = [];
       for (const rawLine of imageText.split('\n')) {
@@ -1008,7 +1018,7 @@
         const file = generatedImageFile || await renderMessageImage();
 
         if (navigator.canShare && navigator.canShare({ files: [file] })) {
-          await navigator.share({ files: [file], text: generatedLink || undefined });
+          await navigator.share({ files: [file], text: [generatedLink, generatedContactLine].filter(Boolean).join('\n\n') });
           return;
         }
       } catch(e) {
