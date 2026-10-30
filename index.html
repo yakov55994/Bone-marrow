@@ -3,8 +3,12 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>שינוע מח עצם</title>
-  <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <meta name="theme-color" content="#861A32" />
+  <title>שינוע מבחנות מח עצם</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%23861A32'/%3E%3Ccircle cx='16' cy='16' r='5' fill='%23F6F8F7'/%3E%3Ccircle cx='16' cy='16' r='11' fill='none' stroke='%23F6F8F7' stroke-width='2'/%3E%3C/svg%3E" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Frank+Ruhl+Libre:wght@700;900&family=IBM+Plex+Sans+Hebrew:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <style>
     *, *::before, *::after {
       box-sizing: border-box;
@@ -13,51 +17,92 @@
     }
 
     :root {
-      --navy: #0f1f3d;
-      --navy-light: #1a3260;
-      --gold: #c9a84c;
-      --gold-light: #e8c96e;
-      --gold-pale: #f5e9c8;
-      --cream: #faf8f3;
+      --marrow: #861A32;
+      --marrow-deep: #6B1428;
+      --marrow-tint: #F5E4E8;
+      --ice: #EFF2F1;
+      --ice-deep: #E1E6E4;
       --white: #ffffff;
-      --text-dark: #1a1a2e;
-      --text-muted: #7a7a8c;
-      --shadow-lg: 0 20px 60px rgba(15,31,61,0.18);
-      --shadow-md: 0 8px 30px rgba(15,31,61,0.12);
-      --shadow-sm: 0 4px 15px rgba(15,31,61,0.08);
-      --radius: 20px;
-      --radius-sm: 14px;
+      --ink: #22151A;
+      --ink-soft: #5B5055;
+      --edge: #8C9391;
+      --hairline: #CDD3D1;
+      --send: #0B6B57;
+      --send-deep: #08564A;
+      --danger: #A61B1B;
+      --radius: 4px;
+      --serif: 'Frank Ruhl Libre', 'David Libre', Georgia, serif;
+      --sans: 'IBM Plex Sans Hebrew', 'Segoe UI', Arial, sans-serif;
+      --rail-gutter: 32px;
+      --field-h: 56px;
+      --label-h: 29px;
     }
 
-    html { scroll-behavior: smooth; }
+    html {
+      scroll-behavior: smooth;
+      background: var(--marrow);
+    }
 
     body {
-      font-family: 'Heebo', 'Segoe UI', Arial, sans-serif;
-      background: var(--navy);
-      min-height: 100vh;
-      padding: 0;
+      font-family: var(--sans);
+      font-size: 16px;
+      line-height: 1.5;
+      color: var(--ink);
+      background: var(--marrow);
       direction: rtl;
-      position: relative;
-      overflow-x: hidden;
     }
 
-    /* Subtle background texture */
-    body::before {
-      content: '';
-      position: fixed;
-      inset: 0;
-      background:
-        radial-gradient(ellipse at 20% 20%, rgba(201,168,76,0.08) 0%, transparent 60%),
-        radial-gradient(ellipse at 80% 80%, rgba(26,50,96,0.6) 0%, transparent 60%);
-      pointer-events: none;
-      z-index: 0;
+    ::selection {
+      background: var(--marrow);
+      color: var(--white);
+    }
+
+    input { caret-color: var(--marrow); }
+
+    h1, h2 { text-wrap: balance; }
+
+    :focus-visible {
+      outline: 3px solid var(--ink);
+      outline-offset: 2px;
     }
 
     .page-wrap {
+      min-height: 100dvh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ─── HERO ─── */
+    /* The title sits behind the image and only shows if the image fails to load */
+    .hero {
+      display: grid;
+      background: var(--marrow);
+    }
+
+    .hero > * { grid-area: 1 / 1; }
+
+    .header-title {
+      align-self: start;
+      padding: 32px 24px;
+      font-family: var(--serif);
+      font-size: 40px;
+      font-weight: 900;
+      line-height: 1.15;
+      color: var(--ice);
+    }
+
+    .header-banner {
       position: relative;
-      z-index: 1;
-      min-height: 100vh;
-      padding: 20px 16px 32px;
+      display: block;
+      width: 100%;
+      height: auto;
+    }
+
+    /* ─── SHEET ─── */
+    .sheet {
+      flex: 1;
+      background: var(--ice);
+      padding: 36px 24px 28px;
     }
 
     .container {
@@ -65,231 +110,446 @@
       margin: 0 auto;
     }
 
-    /* ─── HEADER ─── */
-    .header {
-      text-align: center;
-      padding: 32px 24px 28px;
-      margin-bottom: 24px;
-      position: relative;
-    }
-
-    .header-banner {
-      width: 100%;
-      max-width: 420px;
-      border-radius: 16px;
-      box-shadow: var(--shadow-lg);
-      display: block;
-      margin: 0 auto 20px;
-    }
-
-    .header-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      background: linear-gradient(135deg, var(--gold), var(--gold-light));
-      color: var(--navy);
-      font-size: 13px;
-      font-weight: 700;
-      padding: 6px 18px;
-      border-radius: 100px;
-      margin-bottom: 14px;
-      letter-spacing: 0.5px;
-      box-shadow: 0 4px 12px rgba(201,168,76,0.35);
-    }
-
-    .header-title {
-      font-size: 30px;
-      font-weight: 900;
-      color: var(--white);
-      line-height: 1.2;
-      margin-bottom: 10px;
-      letter-spacing: -0.5px;
-    }
-
-    .header-title span {
-      color: var(--gold);
-    }
-
-    .header-quote {
-      font-size: 14px;
-      font-weight: 400;
-      color: rgba(255,255,255,0.6);
-      font-style: italic;
-      line-height: 1.6;
-    }
-
-    /* Gold divider */
-    .gold-line {
-      width: 60px;
-      height: 3px;
-      background: linear-gradient(90deg, transparent, var(--gold), transparent);
-      border-radius: 10px;
-      margin: 14px auto 0;
-    }
-
-    /* ─── CARD ─── */
-    .card {
-      background: var(--white);
-      border-radius: var(--radius);
-      padding: 28px 24px;
-      box-shadow: var(--shadow-lg);
-      margin-bottom: 20px;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .card::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      right: 0;
-      left: 0;
-      height: 4px;
-      background: linear-gradient(90deg, var(--gold), var(--gold-light), var(--gold));
-    }
-
     .card-title {
-      font-size: 16px;
-      font-weight: 800;
-      color: var(--navy);
-      margin-bottom: 22px;
-      text-align: center;
-      letter-spacing: 0.3px;
-    }
-
-    .card-title::after {
-      content: '';
-      display: block;
-      width: 40px;
-      height: 2px;
-      background: var(--gold);
-      margin: 8px auto 0;
-      border-radius: 10px;
+      font-family: var(--serif);
+      font-size: 30px;
+      font-weight: 700;
+      line-height: 1.2;
+      margin-bottom: 26px;
     }
 
     /* ─── FIELDS ─── */
     .field-group {
-      margin-bottom: 18px;
-    }
-
-    .field-group:last-of-type {
+      position: relative;
       margin-bottom: 22px;
+      padding-inline-start: var(--rail-gutter);
     }
 
     label {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      font-size: 13px;
-      font-weight: 700;
-      color: var(--navy);
-      margin-bottom: 8px;
-      letter-spacing: 0.3px;
-      text-transform: uppercase;
+      display: block;
+      min-height: var(--label-h);
+      font-size: 15px;
+      font-weight: 600;
     }
 
-    .label-icon {
-      width: 26px;
-      height: 26px;
-      background: var(--gold-pale);
-      border-radius: 8px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 14px;
-      flex-shrink: 0;
+    /* The route: one line from origin to destination */
+    .route { position: relative; }
+
+    .route::before {
+      content: '';
+      position: absolute;
+      inset-inline-start: 8px;
+      width: 2px;
+      top: calc(var(--label-h) + var(--field-h) / 2);
+      bottom: calc(var(--field-h) / 2);
+      background: var(--marrow);
+    }
+
+    .route .field-group::before {
+      content: '';
+      position: absolute;
+      inset-inline-start: 0;
+      top: calc(var(--label-h) + var(--field-h) / 2 - 9px);
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      border: 2px solid var(--marrow);
+      background: var(--ice);
+    }
+
+    .route .field-group:last-child::before {
+      background: var(--marrow);
     }
 
     input[type="text"],
+    input[type="tel"],
     input[type="url"] {
       width: 100%;
-      padding: 15px 18px;
-      border: 1.5px solid #e4e4f0;
-      border-radius: var(--radius-sm);
-      font-size: 15px;
-      font-family: 'Heebo', inherit;
+      height: var(--field-h);
+      padding: 0 16px;
+      border: 1.5px solid var(--edge);
+      border-radius: var(--radius);
+      font-family: var(--sans);
+      font-size: 16px;
       font-weight: 500;
       direction: rtl;
-      color: var(--text-dark);
-      background: var(--cream);
-      transition: border-color 0.25s, box-shadow 0.25s, background 0.25s;
+      color: var(--ink);
+      background: var(--white);
+      transition: border-color 0.15s, box-shadow 0.15s;
       outline: none;
       -webkit-appearance: none;
     }
 
+    /* Web addresses read left to right, whatever the page direction */
+    input[type="url"] {
+      direction: ltr;
+      text-align: right;
+    }
+
+    input[type="url"]:not(:placeholder-shown) { text-align: left; }
+
+    input[type="tel"] {
+      direction: ltr;
+      text-align: right;
+    }
+
     input[type="text"]::placeholder,
+    input[type="tel"]::placeholder,
     input[type="url"]::placeholder {
-      color: #b0b0c0;
+      color: var(--ink-soft);
       font-weight: 400;
     }
 
     input[type="text"]:focus,
+    input[type="tel"]:focus,
     input[type="url"]:focus {
-      border-color: var(--gold);
-      box-shadow: 0 0 0 4px rgba(201,168,76,0.12);
-      background: var(--white);
+      border-color: var(--marrow);
+      box-shadow: 0 0 0 3px rgba(134,26,50,0.22);
     }
 
-    /* ─── GENERATE BUTTON ─── */
-    .btn-generate {
-      width: 100%;
-      padding: 17px;
-      background: linear-gradient(135deg, var(--navy-light) 0%, var(--navy) 100%);
-      color: var(--white);
-      border: none;
-      border-radius: var(--radius-sm);
-      font-size: 16px;
-      font-weight: 800;
-      font-family: 'Heebo', inherit;
-      cursor: pointer;
-      transition: transform 0.18s, box-shadow 0.18s;
-      box-shadow: 0 6px 24px rgba(15,31,61,0.35);
-      letter-spacing: 0.5px;
+    /* ─── PLACE COMBOBOX ─── */
+    .combo {
       position: relative;
-      overflow: hidden;
+      scroll-margin-top: 44px;
     }
 
-    .btn-generate::after {
+    .combo input[type="text"] {
+      padding-inline-end: 42px;
+    }
+
+    .combo::after {
       content: '';
       position: absolute;
-      inset: 0;
-      background: linear-gradient(135deg, rgba(201,168,76,0.15), transparent 60%);
+      top: calc(var(--field-h) / 2 - 7px);
+      inset-inline-end: 18px;
+      width: 8px;
+      height: 8px;
+      border-right: 2px solid var(--ink-soft);
+      border-bottom: 2px solid var(--ink-soft);
+      transform: rotate(45deg);
+      transition: transform 0.18s;
+      pointer-events: none;
     }
 
-    .btn-generate:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 10px 30px rgba(15,31,61,0.45);
+    .combo.is-open::after {
+      transform: translateY(4px) rotate(-135deg);
     }
 
-    .btn-generate:active {
-      transform: translateY(0) scale(0.98);
-      box-shadow: 0 4px 12px rgba(15,31,61,0.3);
+    .combo-list {
+      position: absolute;
+      top: calc(100% + 4px);
+      inset-inline: 0;
+      z-index: 10;
+      max-height: 264px;
+      overflow-y: auto;
+      overscroll-behavior: contain;
+      scrollbar-width: thin;
+      scrollbar-color: var(--edge) transparent;
+      padding: 4px;
+      list-style: none;
+      background: var(--white);
+      border: 1.5px solid var(--ink);
+      border-radius: var(--radius);
+      box-shadow: 0 14px 32px rgba(60,12,24,0.22);
     }
 
-    /* ─── RESULT CARD ─── */
+    .combo-option {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      min-height: 46px;
+      padding: 6px 12px;
+      border-radius: 2px;
+      font-size: 16px;
+      font-weight: 500;
+      cursor: pointer;
+    }
+
+    @media (hover: hover) {
+      .combo-option:hover { background: var(--ice); }
+    }
+
+    .combo-option.is-active { background: var(--marrow-tint); }
+
+    .combo-option[aria-selected="true"] {
+      font-weight: 700;
+      color: var(--marrow);
+    }
+
+    .combo-name {
+      flex: 1;
+      min-width: 0;
+      overflow-wrap: anywhere;
+    }
+
+    .combo-saved {
+      flex-shrink: 0;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--ink-soft);
+    }
+
+    .combo-delete {
+      flex-shrink: 0;
+      width: 40px;
+      height: 40px;
+      margin-inline-end: -10px;
+      border: none;
+      border-radius: var(--radius);
+      background: none;
+      font-family: inherit;
+      font-size: 20px;
+      line-height: 1;
+      color: var(--ink-soft);
+      cursor: pointer;
+    }
+
+    .combo-delete:hover {
+      background: var(--marrow-tint);
+      color: var(--danger);
+    }
+
+    .combo-add {
+      position: sticky;
+      bottom: -4px;
+      display: block;
+      margin: 4px -4px -4px;
+      padding: 10px 16px;
+      border-radius: 0;
+      border-top: 1.5px solid var(--hairline);
+      background: var(--white);
+      font-weight: 600;
+      overflow-wrap: anywhere;
+    }
+
+    .combo-add:only-child {
+      margin-top: -4px;
+      border-top: none;
+    }
+
+    .combo-add.is-active { background: var(--marrow-tint); }
+
+    @media (hover: hover) {
+      .combo-add:hover:not(.is-active) { background: var(--ice); }
+    }
+
+    .combo-add-hint {
+      display: block;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--ink-soft);
+    }
+
+    /* Room to lift the open list above the on-screen keyboard */
+    @media (pointer: coarse) {
+      .combo-list { max-height: 220px; }
+      body:has(.combo.is-open) .sheet { padding-bottom: 70vh; }
+    }
+
+    /* ─── CONTACT PICKER ─── */
+    .contact {
+      border: none;
+      min-width: 0;
+      margin-bottom: 22px;
+      padding-inline-start: var(--rail-gutter);
+    }
+
+    .contact legend {
+      padding: 0;
+      min-height: var(--label-h);
+      font-size: 15px;
+      font-weight: 600;
+    }
+
+    .contact-options {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 6px;
+    }
+
+    .contact-option {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      min-height: var(--field-h);
+      margin: 0;
+      padding: 6px 4px;
+      border: 1.5px solid var(--edge);
+      border-radius: var(--radius);
+      background: var(--white);
+      font-size: 15px;
+      font-weight: 600;
+      line-height: 1.3;
+      text-align: center;
+      cursor: pointer;
+      transition: background-color 0.15s, border-color 0.15s, color 0.15s;
+    }
+
+    .contact-option input {
+      position: absolute;
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .contact-detail {
+      font-size: 13px;
+      font-weight: 400;
+      color: var(--ink-soft);
+      font-variant-numeric: tabular-nums;
+      white-space: nowrap;
+    }
+
+    /* Phone numbers need the full width on narrow phones */
+    @media (max-width: 419px) {
+      .contact { padding-inline-start: 0; }
+    }
+
+    @media (max-width: 349px) {
+      .contact-options { grid-template-columns: minmax(0, 1fr); }
+    }
+
+    @media (hover: hover) {
+      .contact-option:hover { background: var(--ice-deep); }
+    }
+
+    .contact-option:has(input:checked) {
+      border-color: var(--marrow);
+      box-shadow: inset 0 0 0 1px var(--marrow);
+      background: var(--marrow-tint);
+      color: var(--marrow);
+    }
+
+    .contact-option:has(input:checked) .contact-detail { color: var(--ink); }
+
+    .contact-option:has(input:focus-visible) {
+      outline: 3px solid var(--ink);
+      outline-offset: 2px;
+    }
+
+    .contact-custom {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 6px;
+      margin-top: 14px;
+    }
+
+    .contact-custom[hidden] { display: none; }
+
+    /* ─── BUTTONS ─── */
+    .btn-generate,
+    .btn-generate-image,
+    .btn-whatsapp,
+    .btn-copy,
+    .btn-save-image {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      width: 100%;
+      min-height: 56px;
+      padding: 12px 16px;
+      border: 1.5px solid transparent;
+      border-radius: var(--radius);
+      font-family: var(--sans);
+      font-size: 17px;
+      font-weight: 700;
+      text-decoration: none;
+      cursor: pointer;
+      transition: background-color 0.15s, color 0.15s, transform 0.1s;
+      -webkit-appearance: none;
+    }
+
+    .btn-generate:active,
+    .btn-generate-image:active,
+    .btn-whatsapp:active,
+    .btn-copy:active,
+    .btn-save-image:active { transform: translateY(1px); }
+
+    .btn-generate {
+      margin-top: 30px;
+      background: var(--marrow);
+      color: var(--white);
+    }
+
+    .btn-generate:hover { background: var(--marrow-deep); }
+
+    .btn-generate-image {
+      margin-top: 10px;
+      background: transparent;
+      border-color: var(--marrow);
+      color: var(--marrow);
+    }
+
+    .btn-generate-image:hover { background: var(--marrow-tint); }
+
+    .btn-generate-image:disabled {
+      cursor: wait;
+      opacity: 0.6;
+      transform: none;
+    }
+
+    .form-error {
+      margin-top: 12px;
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--danger);
+      text-wrap: balance;
+    }
+
+    .form-error[hidden],
+    .message-box[hidden],
+    .image-preview[hidden],
+    .btn-save-image[hidden] { display: none; }
+
+    .btn-whatsapp {
+      background: var(--send);
+      color: var(--white);
+    }
+
+    .btn-whatsapp:hover { background: var(--send-deep); }
+
+    .btn-copy,
+    .btn-save-image {
+      background: transparent;
+      border-color: var(--ink);
+      color: var(--ink);
+    }
+
+    .btn-copy:hover,
+    .btn-save-image:hover { background: var(--ice-deep); }
+
+    .btn-copy.copied {
+      background: var(--ink);
+      border-color: var(--ink);
+      color: var(--white);
+    }
+
+    .btn-wa-text {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 44px;
+      font-size: 15px;
+      font-weight: 500;
+      color: var(--ink-soft);
+      text-underline-offset: 3px;
+    }
+
+    .btn-wa-text:hover { color: var(--ink); }
+
+    /* ─── RESULT ─── */
     .result-card {
       display: none;
-      background: var(--white);
-      border-radius: var(--radius);
-      padding: 28px 24px;
-      box-shadow: var(--shadow-lg);
-      margin-bottom: 20px;
-      position: relative;
-      overflow: hidden;
-      animation: slideUp 0.4s cubic-bezier(0.22, 1, 0.36, 1) both;
+      margin-top: 36px;
+      padding-top: 32px;
+      border-top: 2px solid var(--ink);
+      scroll-margin-top: 12px;
+      animation: slideUp 0.3s cubic-bezier(0.22, 1, 0.36, 1) both;
     }
 
     @keyframes slideUp {
-      from { opacity: 0; transform: translateY(20px); }
+      from { opacity: 0; transform: translateY(12px); }
       to   { opacity: 1; transform: translateY(0); }
-    }
-
-    .result-card::before {
-      content: '';
-      position: absolute;
-      top: 0; right: 0; left: 0;
-      height: 4px;
-      background: linear-gradient(90deg, #25D366, #128C7E);
     }
 
     .result-card.visible {
@@ -297,219 +557,202 @@
     }
 
     .result-label {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      font-size: 12px;
+      font-family: var(--serif);
+      font-size: 26px;
       font-weight: 700;
-      color: var(--text-muted);
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      margin-bottom: 16px;
-    }
-
-    .result-label::before,
-    .result-label::after {
-      content: '';
-      flex: 1;
-      height: 1px;
-      background: #e4e4f0;
+      line-height: 1.2;
+      margin-bottom: 18px;
     }
 
     .message-box {
-      background: linear-gradient(145deg, #f8fff8, #f0fdf4);
-      border: 1.5px solid #d1fae5;
-      border-radius: var(--radius-sm);
-      padding: 20px 18px;
-      font-size: 15.5px;
-      line-height: 2;
-      color: var(--text-dark);
-      white-space: pre-wrap;
-      word-break: break-word;
-      direction: rtl;
+      background: var(--white);
+      border-radius: var(--radius);
+      padding: 18px 18px 20px;
+      font-size: 16px;
       font-weight: 500;
+      line-height: 1.8;
+      white-space: pre-wrap;
+      overflow-wrap: anywhere;
+      direction: rtl;
     }
 
-    /* ─── ACTION BUTTONS ─── */
+    .image-preview {
+      display: block;
+      width: 100%;
+      height: auto;
+      border-radius: var(--radius);
+    }
+
     .actions {
       display: flex;
       flex-direction: column;
       gap: 10px;
-      margin-top: 16px;
+      margin-top: 18px;
     }
-
-    .btn-copy {
-      width: 100%;
-      padding: 15px;
-      background: linear-gradient(135deg, var(--gold), var(--gold-light));
-      color: var(--navy);
-      border: none;
-      border-radius: var(--radius-sm);
-      font-size: 15px;
-      font-weight: 800;
-      font-family: 'Heebo', inherit;
-      cursor: pointer;
-      transition: transform 0.18s, box-shadow 0.18s;
-      box-shadow: 0 6px 20px rgba(201,168,76,0.4);
-      letter-spacing: 0.3px;
-    }
-
-    .btn-copy:hover {
-      transform: translateY(-1px);
-      box-shadow: 0 8px 25px rgba(201,168,76,0.5);
-    }
-
-    .btn-copy:active { transform: scale(0.98); }
-
-    .btn-copy.copied {
-      background: linear-gradient(135deg, #16a085, #1abc9c);
-      color: white;
-      box-shadow: 0 6px 20px rgba(22,160,133,0.4);
-    }
-
-    .btn-whatsapp {
-      width: 100%;
-      padding: 15px;
-      background: linear-gradient(135deg, #128C7E, #25D366);
-      color: white;
-      border: none;
-      border-radius: var(--radius-sm);
-      font-size: 15px;
-      font-weight: 800;
-      font-family: 'Heebo', inherit;
-      cursor: pointer;
-      transition: transform 0.18s, box-shadow 0.18s;
-      box-shadow: 0 6px 20px rgba(37,211,102,0.4);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      text-decoration: none;
-      letter-spacing: 0.3px;
-      -webkit-appearance: none;
-    }
-
-    .btn-whatsapp:hover {
-      transform: translateY(-1px);
-      box-shadow: 0 8px 25px rgba(37,211,102,0.5);
-    }
-
-    .btn-whatsapp:active { transform: scale(0.98); }
 
     /* ─── FOOTER ─── */
     footer {
-      text-align: center;
-      padding: 8px 0 4px;
+      margin-top: 40px;
     }
 
     .footer-text {
-      font-size: 13px;
-      color: rgba(255,255,255,0.35);
-      font-weight: 400;
+      font-size: 14px;
+      color: var(--ink-soft);
     }
 
-    .footer-heart {
-      display: inline-block;
-      color: var(--gold);
-      font-size: 16px;
-      vertical-align: middle;
+    /* ─── WIDE SCREENS: image pane beside the form ─── */
+    @media (min-width: 900px) {
+      .page-wrap {
+        display: grid;
+        grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+      }
+
+      .hero {
+        position: sticky;
+        top: 0;
+        height: 100dvh;
+        align-content: end;
+      }
+
+      .sheet {
+        padding: 72px 56px 40px;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      .result-card { animation: none; }
+      .combo::after,
+      input[type="text"],
+      input[type="tel"],
+      input[type="url"],
+      .contact-option,
+      .btn-generate,
+      .btn-generate-image,
+      .btn-whatsapp,
+      .btn-copy,
+      .btn-save-image { transition: none; }
     }
   </style>
 </head>
 <body>
   <div class="page-wrap">
-    <div class="container">
 
-      <!-- HEADER -->
-      <div class="header">
-        <img
-          id="headerBanner"
-          src="image.jpeg"
-          alt="שינוע מח עצם"
-          class="header-banner"
-          onerror="this.style.display='none'"
-        />
-        <div class="header-badge">🧪 מבצע הצלה</div>
-        <h1 class="header-title">שינוע <span>מח עצם</span></h1>
-        <p class="header-quote">"כל המציל נפש אחת מישראל כאילו קיים עולם מלא"</p>
-        <div class="gold-line"></div>
+    <!-- HERO -->
+    <header class="hero">
+      <h1 class="header-title">שינוע מבחנות מח עצם</h1>
+      <img
+        id="headerBanner"
+        src="image.jpeg"
+        alt="כל המציל נפש אחת מישראל כאילו קיים עולם מלא"
+        class="header-banner"
+        width="1600"
+        height="1067"
+        onerror="this.style.display='none'"
+      />
+    </header>
+
+    <main class="sheet">
+      <div class="container">
+
+        <!-- FORM -->
+        <section>
+          <h2 class="card-title">יצירת הודעת גיוס</h2>
+
+          <div class="route">
+            <div class="field-group">
+              <label for="origin">נקודת מקור</label>
+              <div class="combo">
+                <input type="text" id="origin" placeholder="חיפוש עיר, מושב או קיבוץ" />
+              </div>
+            </div>
+
+            <div class="field-group">
+              <label for="destination">נקודת יעד</label>
+              <div class="combo">
+                <input type="text" id="destination" placeholder="חיפוש עיר, מושב או קיבוץ" />
+              </div>
+            </div>
+          </div>
+
+          <div class="field-group">
+            <label for="link">קישור לאירוע</label>
+            <input type="url" id="link" placeholder="https://yedidim.startach.io/..." />
+          </div>
+
+          <fieldset class="contact">
+            <legend>איש קשר בהודעה</legend>
+            <div class="contact-options">
+              <label class="contact-option">
+                <input type="radio" name="contact" value="yaakov" checked />
+                יעקב כהן
+                <span class="contact-detail" dir="ltr">050-202-6907</span>
+              </label>
+              <label class="contact-option">
+                <input type="radio" name="contact" value="sruli" />
+                שרוליק כץ
+                <span class="contact-detail" dir="ltr">058-368-7905</span>
+              </label>
+              <label class="contact-option">
+                <input type="radio" name="contact" value="custom" />
+                אחר
+                <span class="contact-detail">שם ומספר</span>
+              </label>
+            </div>
+            <div class="contact-custom" id="contactCustom" hidden>
+              <div>
+                <label for="contactName">שם</label>
+                <input type="text" id="contactName" autocomplete="name" />
+              </div>
+              <div>
+                <label for="contactPhone">טלפון</label>
+                <input type="tel" id="contactPhone" autocomplete="tel" placeholder="050-000-0000" />
+              </div>
+            </div>
+          </fieldset>
+
+          <button class="btn-generate" onclick="generateMessage()">צור הודעה עכשיו</button>
+          <button class="btn-generate-image" id="imageBtn" onclick="generateImage()">צור תמונה עכשיו</button>
+          <p class="form-error" id="imageError" role="alert" hidden></p>
+        </section>
+
+        <!-- RESULT -->
+        <section class="result-card" id="resultCard">
+          <h2 class="result-label" id="resultLabel">ההודעה מוכנה לשיתוף</h2>
+          <div class="message-box" id="messageBox"></div>
+          <img class="image-preview" id="imagePreview" alt="תמונת הודעת הגיוס" hidden />
+          <div class="actions">
+            <button class="btn-copy" id="copyBtn" onclick="copyMessage()">📋 &nbsp;העתק הודעה</button>
+            <button class="btn-whatsapp" id="whatsappShareBtn" onclick="shareWithImage()">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+              </svg>
+              שתף עם תמונה בוואטסאפ
+            </button>
+            <a class="btn-save-image" id="saveImageLink" download="bone-marrow.jpg" hidden>שמור תמונה</a>
+            <!-- Fallback plain WhatsApp link (text only) -->
+            <a class="btn-wa-text" id="waTextLink" href="#" target="_blank">
+              שתף טקסט בלבד (ללא תמונה)
+            </a>
+          </div>
+        </section>
+
+        <footer>
+          <p class="footer-text">מדובר בהצלת חיים</p>
+        </footer>
+
       </div>
+    </main>
 
-      <!-- FORM CARD -->
-      <div class="card">
-        <div class="card-title">יצירת הודעת גיוס</div>
-
-        <div class="field-group">
-          <label for="origin">
-            <span class="label-icon">📍</span>
-            נקודת מקור
-          </label>
-          <input type="text" id="origin" placeholder="לדוגמה: אילת שדרות התמרים" />
-        </div>
-
-        <div class="field-group">
-          <label for="destination">
-            <span class="label-icon">🏁</span>
-            נקודת יעד
-          </label>
-          <input type="text" id="destination" placeholder="לדוגמה: מודיעין עילית" />
-        </div>
-
-        <div class="field-group">
-          <label for="link">
-            <span class="label-icon">🔗</span>
-            קישור לאירוע
-          </label>
-          <input type="url" id="link" placeholder="https://yedidim.startach.io/..." />
-        </div>
-
-        <button class="btn-generate" onclick="generateMessage()">✨ &nbsp;צור הודעה עכשיו</button>
-      </div>
-
-      <!-- RESULT CARD -->
-      <div class="result-card" id="resultCard">
-        <div class="result-label">ההודעה מוכנה לשיתוף</div>
-        <div class="message-box" id="messageBox"></div>
-        <div class="actions">
-          <button class="btn-copy" id="copyBtn" onclick="copyMessage()">📋 &nbsp;העתק הודעה</button>
-          <button class="btn-whatsapp" id="whatsappShareBtn" onclick="shareWithImage()">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="white">
-              <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
-            </svg>
-            שתף עם תמונה בוואטסאפ
-          </button>
-          <!-- Fallback plain WhatsApp link (text only) -->
-          <a class="btn-wa-text" id="waTextLink" href="#" target="_blank">
-            שתף טקסט בלבד (ללא תמונה)
-          </a>
-        </div>
-      </div>
-
-      <footer>
-        <p class="footer-text">מדובר בהצלת חיים &nbsp;<span class="footer-heart">🌏</span></p>
-      </footer>
-
-    </div>
   </div>
 
-  <style>
-    /* WA text fallback link */
-    .btn-wa-text {
-      display: block;
-      text-align: center;
-      margin-top: 4px;
-      padding: 10px;
-      font-size: 13px;
-      color: rgba(255,255,255,0.45);
-      text-decoration: underline;
-      font-family: 'Heebo', inherit;
-    }
-  </style>
-
+  <script src="israel-localities.js"></script>
   <script>
     let generatedMessage = '';
     let generatedLink = '';
+    let generatedImageFile = null;
+    let imagePreviewUrl = '';
+    let imageRequestId = 0;
 
     const E = {
       tube:  '\uD83E\uDDEA',
@@ -519,34 +762,95 @@
       check: '\u2705',
     };
 
-    function buildMessage(origin, destination, link) {
+    const CONTACTS = {
+      yaakov: { name: 'יעקב כהן', phone: '050-202-6907' },
+      sruli:  { name: 'שרוליק כץ', phone: '058-368-7905' },
+    };
+
+    // Writes Israeli numbers the local way: a leading +972 would flip order inside Hebrew text
+    function formatPhone(raw) {
+      const digits = raw.replace(/\D/g, '');
+      const local = digits.startsWith('972') ? '0' + digits.slice(3).replace(/^0/, '') : digits;
+      if (/^05\d{8}$/.test(local)) return local.replace(/^(\d{3})(\d{3})(\d{4})$/, '$1-$2-$3');
+      return digits.startsWith('972') ? local : raw.trim();
+    }
+
+    function getContact() {
+      const choice = document.querySelector('input[name="contact"]:checked').value;
+      if (choice !== 'custom') return CONTACTS[choice];
+
+      const name  = document.getElementById('contactName').value.trim();
+      const phone = document.getElementById('contactPhone').value.trim();
+      if (!name) {
+        shakeInvalid('contactName');
+        return null;
+      }
+      if (phone.replace(/\D/g, '').length < 9) {
+        shakeInvalid('contactPhone');
+        return null;
+      }
+      return { name, phone: formatPhone(phone) };
+    }
+
+    function buildMessage(origin, destination, link, contact) {
       return (
-        '\u05E1\u05D5\u05D2 \u05D0\u05D9\u05E8\u05D5\u05E2: \u05E9\u05D9\u05E0\u05D5\u05E2 \u05DE\u05D7 \u05E2\u05E6\u05DD ' + E.tube + '\n\n' +
-        '\u05DE\u05E0\u05E7\u05D5\u05D3\u05D4: *' + origin + '*\n' +
-        '\u05DC\u05D9\u05E2\u05D3: *' + destination + '*\n' +
+        'סוג אירוע: שינוע / מבחנת מח עצם\n' +
+        'מיקום: ' + origin + '\n' +
         (link ? link + '\n' : '') +
-        '\u05DB\u05DC \u05D4\u05DE\u05E6\u05D9\u05DC \u05E0\u05E4\u05E9 \u05D0\u05D7\u05EA \u05DE\u05D9\u05E9\u05E8\u05D0\u05DC \u05DB\u05D0\u05D9\u05DC\u05D5 \u05E7\u05D9\u05D9\u05DD \u05E2\u05D5\u05DC\u05DD \u05DE\u05DC\u05D0 ' + E.world + '\n' +
-        '\u05DE\u05D9 \u05D9\u05DB\u05D5\u05DC \u05DC\u05E1\u05D9\u05D9\u05E2 \u05D1\u05DE\u05E6\u05D5\u05D5\u05D4? ' + E.heart + '\n\n' +
-        '*\u05DE\u05D3\u05D5\u05D1\u05E8 \u05D1\u05D4\u05E6\u05DC\u05EA \u05D7\u05D9\u05D9\u05DD*'
+        '\n*' + E.tube + ' שינוע מבחנת מח עצם ל' + destination + ' ' + E.tube + '*\n\n' +
+        '*מי שיכול לקדם לאיזור שיעלה מול ' + contact.name + ' בוואטסאפ ' + contact.phone + '*'
       );
     }
 
-    function generateMessage() {
+    function prepareMessage() {
       const origin      = document.getElementById('origin').value.trim();
       const destination = document.getElementById('destination').value.trim();
       const link        = document.getElementById('link').value.trim();
 
       if (!origin || !destination) {
         shakeInvalid(!origin ? 'origin' : 'destination');
-        return;
+        return false;
       }
 
-      generatedMessage = buildMessage(origin, destination, link);
+      const contact = getContact();
+      if (!contact) return false;
+
+      rememberPlace(origin);
+      rememberPlace(destination);
+
+      generatedMessage = buildMessage(origin, destination, link, contact);
       generatedLink = link;
       document.getElementById('messageBox').textContent = generatedMessage;
 
       const waText = encodeURIComponent(generatedMessage);
       document.getElementById('waTextLink').href = 'https://wa.me/?text=' + waText;
+
+      document.getElementById('copyBtn').innerHTML = E.clip + ' \u00A0\u05D4\u05E2\u05EA\u05E7 \u05D4\u05D5\u05D3\u05E2\u05D4';
+      document.getElementById('copyBtn').classList.remove('copied');
+      return true;
+    }
+
+    function showResult(imageFile) {
+      if (imagePreviewUrl) URL.revokeObjectURL(imagePreviewUrl);
+      generatedImageFile = imageFile;
+      imagePreviewUrl = imageFile ? URL.createObjectURL(imageFile) : '';
+
+      const preview = document.getElementById('imagePreview');
+      const saveLink = document.getElementById('saveImageLink');
+      const copyBtn = document.getElementById('copyBtn');
+      const shareBtn = document.getElementById('whatsappShareBtn');
+      copyBtn.parentElement.prepend(...(imageFile ? [shareBtn, saveLink] : [copyBtn]));
+      preview.hidden = saveLink.hidden = !imageFile;
+      document.getElementById('messageBox').hidden = !!imageFile;
+      if (imageFile) {
+        preview.src = saveLink.href = imagePreviewUrl;
+      } else {
+        preview.removeAttribute('src');
+        saveLink.removeAttribute('href');
+      }
+      document.getElementById('resultLabel').textContent = imageFile
+        ? '\u05D4\u05EA\u05DE\u05D5\u05E0\u05D4 \u05DE\u05D5\u05DB\u05E0\u05D4 \u05DC\u05E9\u05D9\u05EA\u05D5\u05E3'
+        : '\u05D4\u05D4\u05D5\u05D3\u05E2\u05D4 \u05DE\u05D5\u05DB\u05E0\u05D4 \u05DC\u05E9\u05D9\u05EA\u05D5\u05E3';
 
       const resultCard = document.getElementById('resultCard');
       resultCard.classList.add('visible');
@@ -555,9 +859,36 @@
         resultCard.style.animation = '';
         resultCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
       });
+    }
 
-      document.getElementById('copyBtn').innerHTML = E.clip + ' \u00A0\u05D4\u05E2\u05EA\u05E7 \u05D4\u05D5\u05D3\u05E2\u05D4';
-      document.getElementById('copyBtn').classList.remove('copied');
+    function generateMessage() {
+      if (!prepareMessage()) return;
+      imageRequestId++;
+      document.getElementById('imageError').hidden = true;
+      showResult(null);
+    }
+
+    async function generateImage() {
+      if (!prepareMessage()) return;
+
+      const requestId = ++imageRequestId;
+      const btn = document.getElementById('imageBtn');
+      const error = document.getElementById('imageError');
+      error.hidden = true;
+      btn.disabled = true;
+
+      try {
+        const file = await renderMessageImage();
+        if (requestId === imageRequestId) showResult(file);
+      } catch (e) {
+        if (requestId === imageRequestId) {
+          document.getElementById('resultCard').classList.remove('visible');
+          error.textContent = '\u05D4\u05EA\u05DE\u05D5\u05E0\u05D4 \u05DC\u05D0 \u05E0\u05D5\u05E6\u05E8\u05D4. \u05D0\u05E4\u05E9\u05E8 \u05DC\u05E0\u05E1\u05D5\u05EA \u05E9\u05D5\u05D1 \u05D0\u05D5 \u05DC\u05D9\u05E6\u05D5\u05E8 \u05D4\u05D5\u05D3\u05E2\u05EA \u05D8\u05E7\u05E1\u05D8.';
+          error.hidden = false;
+        }
+      } finally {
+        btn.disabled = false;
+      }
     }
 
     function copyMessage() {
@@ -583,92 +914,94 @@
       });
     }
 
+    async function renderMessageImage() {
+      await document.fonts.ready;
+
+      const imgBlob = await fetch('image.jpeg').then(r => { if (!r.ok) throw new Error(); return r.blob(); });
+      const imgBitmap = await createImageBitmap(imgBlob);
+
+      const W = 1080;
+      const bannerH = Math.round(imgBitmap.height * (W / imgBitmap.width));
+      const PAD = 64;
+      const FS  = 42;
+      const LH  = FS * 1.85;
+
+      const canvas = document.createElement('canvas');
+      canvas.width = W;
+      canvas.height = 100;
+      const ctx = canvas.getContext('2d');
+      ctx.textBaseline = 'top';
+      ctx.direction    = 'rtl';
+      ctx.textAlign    = 'right';
+
+      // Parse each source line → {text, bold}, then word-wrap
+      const imageText = generatedLink
+        ? generatedMessage.replace(generatedLink + '\n', '').replace('\n' + generatedLink, '')
+        : generatedMessage;
+
+      const parsed = [];
+      for (const rawLine of imageText.split('\n')) {
+        const bold = /\*/.test(rawLine);
+        const text = rawLine.replace(/\*/g, '');
+        ctx.font = `${bold ? 800 : 500} ${FS}px 'IBM Plex Sans Hebrew', Arial, sans-serif`;
+
+        if (!text.trim()) { parsed.push({ text: '', bold }); continue; }
+
+        const words = text.split(' ');
+        let cur = '';
+        for (const w of words) {
+          const test = cur ? cur + ' ' + w : w;
+          if (ctx.measureText(test).width > W - PAD * 2 && cur) {
+            parsed.push({ text: cur, bold });
+            cur = w;
+          } else {
+            cur = test;
+          }
+        }
+        if (cur) parsed.push({ text: cur, bold });
+      }
+
+      const textH = parsed.length * LH + PAD * 2;
+      canvas.height = bannerH + textH;
+
+      // ── Draw banner ──
+      ctx.drawImage(imgBitmap, 0, 0, W, bannerH);
+
+      // ── Text background ──
+      ctx.fillStyle = '#EFF2F1';
+      ctx.fillRect(0, bannerH, W, textH);
+
+      // Accent bar
+      ctx.fillStyle = '#6B1428';
+      ctx.fillRect(0, bannerH, W, 6);
+
+      // ── Draw text lines ──
+      ctx.textBaseline = 'top';
+      ctx.direction    = 'rtl';
+      ctx.textAlign    = 'right';
+      parsed.forEach(({ text, bold }, i) => {
+        ctx.font      = `${bold ? 800 : 500} ${FS}px 'IBM Plex Sans Hebrew', Arial, sans-serif`;
+        ctx.fillStyle = '#22151A';
+        ctx.fillText(text, W - PAD, bannerH + 6 + PAD + i * LH);
+      });
+
+      const finalBlob = await new Promise(resolve => canvas.toBlob(resolve, 'image/jpeg', 0.93));
+      return new File([finalBlob], 'bone-marrow.jpg', { type: 'image/jpeg' });
+    }
+
     async function shareWithImage() {
       if (!generatedMessage) return;
 
       try {
-        await document.fonts.ready;
-
-        const imgBlob = await fetch('image.jpeg').then(r => { if (!r.ok) throw new Error(); return r.blob(); });
-        const imgBitmap = await createImageBitmap(imgBlob);
-
-        const W = 1080;
-        const bannerH = Math.round(imgBitmap.height * (W / imgBitmap.width));
-        const PAD = 64;
-        const FS  = 42;
-        const LH  = FS * 1.85;
-
-        const canvas = document.createElement('canvas');
-        canvas.width = W;
-        canvas.height = 100;
-        const ctx = canvas.getContext('2d');
-        ctx.textBaseline = 'top';
-        ctx.direction    = 'rtl';
-        ctx.textAlign    = 'right';
-
-        // Parse each source line → {text, bold}, then word-wrap
-        const imageText = generatedLink
-          ? generatedMessage.replace(generatedLink + '\n', '').replace('\n' + generatedLink, '')
-          : generatedMessage;
-
-        const parsed = [];
-        for (const rawLine of imageText.split('\n')) {
-          const bold = /\*/.test(rawLine);
-          const text = rawLine.replace(/\*/g, '');
-          ctx.font = `${bold ? 800 : 500} ${FS}px Heebo, Arial, sans-serif`;
-
-          if (!text.trim()) { parsed.push({ text: '', bold }); continue; }
-
-          const words = text.split(' ');
-          let cur = '';
-          for (const w of words) {
-            const test = cur ? cur + ' ' + w : w;
-            if (ctx.measureText(test).width > W - PAD * 2 && cur) {
-              parsed.push({ text: cur, bold });
-              cur = w;
-            } else {
-              cur = test;
-            }
-          }
-          if (cur) parsed.push({ text: cur, bold });
-        }
-
-        const textH = parsed.length * LH + PAD * 2;
-        canvas.height = bannerH + textH;
-
-        // ── Draw banner ──
-        ctx.drawImage(imgBitmap, 0, 0, W, bannerH);
-
-        // ── Text background ──
-        ctx.fillStyle = '#f5f5f0';
-        ctx.fillRect(0, bannerH, W, textH);
-
-        // Gold accent bar
-        const grd = ctx.createLinearGradient(0, 0, W, 0);
-        grd.addColorStop(0, '#c9a84c');
-        grd.addColorStop(0.5, '#e8c96e');
-        grd.addColorStop(1, '#c9a84c');
-        ctx.fillStyle = grd;
-        ctx.fillRect(0, bannerH, W, 6);
-
-        // ── Draw text lines ──
-        ctx.textBaseline = 'top';
-        ctx.direction    = 'rtl';
-        ctx.textAlign    = 'right';
-        parsed.forEach(({ text, bold }, i) => {
-          ctx.font      = `${bold ? 800 : 500} ${FS}px Heebo, Arial, sans-serif`;
-          ctx.fillStyle = bold ? '#0f1f3d' : '#2a2a3e';
-          ctx.fillText(text, W - PAD, bannerH + 6 + PAD + i * LH);
-        });
-
-        const finalBlob = await new Promise(resolve => canvas.toBlob(resolve, 'image/jpeg', 0.93));
-        const file = new File([finalBlob], 'bone-marrow.jpg', { type: 'image/jpeg' });
+        const file = generatedImageFile || await renderMessageImage();
 
         if (navigator.canShare && navigator.canShare({ files: [file] })) {
           await navigator.share({ files: [file], text: generatedLink || undefined });
           return;
         }
-      } catch(e) { /* fall through */ }
+      } catch(e) {
+        if (e.name === 'AbortError') return;
+      }
 
       window.location.href = 'https://wa.me/?text=' + encodeURIComponent(generatedMessage);
     }
@@ -682,8 +1015,303 @@
     }
 
     document.addEventListener('keydown', e => {
-      if (e.key === 'Enter') generateMessage();
+      if (e.key === 'Enter' && !e.target.closest('button, a')) generateMessage();
     });
+
+    // ── Place search ──
+    const CUSTOM_PLACES_KEY = 'bone-marrow:custom-places';
+
+    const PLACE_ALIASES = {
+      'תא': 'תל אביב - יפו',
+      'בש': 'באר שבע',
+      'פת': 'פתח תקווה',
+      'רג': 'רמת גן',
+      'בב': 'בני ברק',
+      'ראשלצ': 'ראשון לציון',
+      'קש': 'קרית שמונה',
+      'קג': 'קרית גת',
+    };
+
+    // Ignores punctuation and the קרית/קריית spelling difference
+    function normalizePlace(name) {
+      return name
+        .toLowerCase()
+        .replace(/["'`׳״]/g, '')
+        .replace(/[-־()]/g, ' ')
+        .replace(/י+/g, 'י')
+        .replace(/ו+/g, 'ו')
+        .replace(/\s+/g, ' ')
+        .trim();
+    }
+
+    function loadCustomPlaces() {
+      try {
+        const saved = JSON.parse(localStorage.getItem(CUSTOM_PLACES_KEY));
+        return Array.isArray(saved) ? saved.filter(name => typeof name === 'string' && normalizePlace(name)) : [];
+      } catch (e) {
+        return [];
+      }
+    }
+
+    const toPlace = custom => name => ({ name, key: normalizePlace(name), custom });
+    const builtInPlaces = ISRAEL_LOCALITIES.map(toPlace(false));
+    let customPlaces = loadCustomPlaces();
+    let places = [];
+
+    function refreshPlaces() {
+      places = customPlaces.map(toPlace(true)).concat(builtInPlaces);
+    }
+    refreshPlaces();
+
+    function saveCustomPlaces(names) {
+      customPlaces = names;
+      refreshPlaces();
+      try {
+        localStorage.setItem(CUSTOM_PLACES_KEY, JSON.stringify(customPlaces));
+      } catch (e) { /* storage unavailable: the name lasts until the page closes */ }
+    }
+
+    function findPlace(name) {
+      const key = normalizePlace(name);
+      return places.find(place => place.key === key);
+    }
+
+    function rememberPlace(name) {
+      const trimmed = name.trim();
+      if (!normalizePlace(trimmed) || findPlace(trimmed)) return;
+      saveCustomPlaces([trimmed, ...customPlaces]);
+    }
+
+    function forgetPlace(name) {
+      saveCustomPlaces(customPlaces.filter(saved => saved !== name));
+    }
+
+    function searchPlaces(query) {
+      const q = normalizePlace(query);
+      if (!q) return places;
+
+      const alias = PLACE_ALIASES[q];
+      const rank = place => {
+        if (place.name === alias) return 0;
+        if (place.key.startsWith(q)) return 1;
+        if (place.key.includes(' ' + q)) return 2;
+        return place.key.includes(q) ? 3 : -1;
+      };
+
+      return places
+        .map(place => ({ place, score: rank(place) }))
+        .filter(match => match.score >= 0)
+        .sort((a, b) =>
+          a.score - b.score ||
+          b.place.custom - a.place.custom ||
+          a.place.key.length - b.place.key.length ||
+          a.place.key.localeCompare(b.place.key, 'he'))
+        .map(match => match.place);
+    }
+
+    function setupPlaceCombo(input) {
+      const combo = input.closest('.combo');
+      const list = document.createElement('ul');
+      const isCoarsePointer = window.matchMedia('(pointer: coarse)');
+      let items = [];
+      let activeIndex = -1;
+      let currentQuery = '';
+
+      list.className = 'combo-list';
+      list.id = input.id + '-list';
+      list.setAttribute('role', 'listbox');
+      list.setAttribute('aria-label', 'יישובים');
+      list.hidden = true;
+      combo.appendChild(list);
+
+      input.setAttribute('role', 'combobox');
+      input.setAttribute('aria-autocomplete', 'list');
+      input.setAttribute('aria-controls', list.id);
+      input.setAttribute('aria-expanded', 'false');
+      input.setAttribute('autocomplete', 'off');
+
+      const isOpen = () => !list.hidden;
+
+      function buildOption(item, index) {
+        const option = document.createElement('li');
+        option.id = input.id + '-option-' + index;
+        option.className = 'combo-option';
+        option.setAttribute('role', 'option');
+        option.dataset.index = index;
+        option.setAttribute('aria-selected', 'false');
+
+        if (item.isNew) {
+          option.classList.add('combo-add');
+          const hint = document.createElement('span');
+          hint.className = 'combo-add-hint';
+          hint.textContent = 'יישמר במכשיר הזה';
+          option.append('הוספת "' + item.name + '" לרשימה', hint);
+          return option;
+        }
+
+        const name = document.createElement('span');
+        name.className = 'combo-name';
+        name.textContent = item.name;
+        option.appendChild(name);
+        option.setAttribute('aria-selected', String(item.key === normalizePlace(input.value)));
+
+        if (item.custom) {
+          const saved = document.createElement('span');
+          saved.className = 'combo-saved';
+          saved.textContent = 'נשמר';
+          const remove = document.createElement('button');
+          remove.type = 'button';
+          remove.className = 'combo-delete';
+          remove.tabIndex = -1;
+          remove.textContent = '×';
+          remove.setAttribute('aria-label', 'מחיקת ' + item.name + ' מהרשימה');
+          option.append(saved, remove);
+        }
+        return option;
+      }
+
+      function setActive(index) {
+        list.children[activeIndex]?.classList.remove('is-active');
+        activeIndex = index;
+        const option = list.children[index];
+        if (!option) {
+          input.removeAttribute('aria-activedescendant');
+          return;
+        }
+        option.classList.add('is-active');
+        input.setAttribute('aria-activedescendant', option.id);
+
+        const addRow = list.querySelector('.combo-add');
+        const covered = addRow && addRow !== option ? addRow.offsetHeight : 0;
+        const top = option.offsetTop;
+        const bottom = top + option.offsetHeight;
+        if (top < list.scrollTop) list.scrollTop = top;
+        else if (bottom > list.scrollTop + list.clientHeight - covered) {
+          list.scrollTop = bottom - list.clientHeight + covered;
+        }
+      }
+
+      function render(query) {
+        currentQuery = query;
+        items = searchPlaces(query);
+        const typed = query.trim();
+        if (normalizePlace(typed) && !findPlace(typed)) {
+          items = items.concat({ name: typed, isNew: true });
+        }
+
+        const fragment = document.createDocumentFragment();
+        items.forEach((item, index) => fragment.appendChild(buildOption(item, index)));
+        list.replaceChildren(fragment);
+        list.scrollTop = 0;
+        activeIndex = -1;
+      }
+
+      function open(query) {
+        render(query);
+        list.hidden = false;
+        combo.classList.add('is-open');
+        input.setAttribute('aria-expanded', 'true');
+      }
+
+      function close() {
+        list.hidden = true;
+        combo.classList.remove('is-open');
+        input.setAttribute('aria-expanded', 'false');
+        input.removeAttribute('aria-activedescendant');
+        activeIndex = -1;
+      }
+
+      // Opens on the full list with the current value highlighted, like a native select
+      function openFullList() {
+        open('');
+        const current = normalizePlace(input.value);
+        setActive(current ? items.findIndex(item => item.key === current) : -1);
+      }
+
+      function choose(item) {
+        if (item.isNew) rememberPlace(item.name);
+        input.value = item.name;
+        close();
+      }
+
+      function removeSaved(index) {
+        forgetPlace(items[index].name);
+        render(currentQuery);
+        setActive(Math.min(index, items.length - 1));
+      }
+
+      input.addEventListener('focus', () => {
+        openFullList();
+        input.select();
+        if (isCoarsePointer.matches) {
+          // Lift the field above the on-screen keyboard once it has opened
+          setTimeout(() => {
+            if (document.activeElement === input) combo.scrollIntoView({ block: 'start' });
+          }, 300);
+        }
+      });
+
+      input.addEventListener('click', () => {
+        if (!isOpen()) openFullList();
+      });
+
+      input.addEventListener('input', () => {
+        open(input.value);
+        setActive(normalizePlace(input.value) ? 0 : -1);
+      });
+
+      input.addEventListener('blur', close);
+
+      input.addEventListener('keydown', e => {
+        if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+          e.preventDefault();
+          if (!isOpen()) { openFullList(); return; }
+          if (!items.length) return;
+          const step = e.key === 'ArrowDown' ? 1 : -1;
+          const start = activeIndex < 0 && step < 0 ? 0 : activeIndex;
+          setActive((start + step + items.length) % items.length);
+        } else if (e.key === 'Enter' && isOpen()) {
+          e.stopPropagation();
+          if (activeIndex >= 0) {
+            e.preventDefault();
+            choose(items[activeIndex]);
+          } else {
+            close();
+          }
+        } else if (e.key === 'Escape' && isOpen()) {
+          close();
+        } else if (e.key === 'Delete' && items[activeIndex]?.custom && input.selectionStart === input.value.length) {
+          e.preventDefault();
+          removeSaved(activeIndex);
+        }
+      });
+
+      // Keep focus in the input while tapping the list; a tap on a touch screen still scrolls it
+      list.addEventListener('mousedown', e => e.preventDefault());
+
+      list.addEventListener('click', e => {
+        const option = e.target.closest('[role="option"]');
+        if (!option) return;
+        const index = Number(option.dataset.index);
+        if (e.target.closest('.combo-delete')) {
+          removeSaved(index);
+          return;
+        }
+        choose(items[index]);
+        if (isCoarsePointer.matches) input.blur();
+      });
+    }
+
+    document.querySelectorAll('input[name="contact"]').forEach(radio => {
+      radio.addEventListener('change', () => {
+        const isCustom = radio.value === 'custom';
+        document.getElementById('contactCustom').hidden = !isCustom;
+        if (isCustom) document.getElementById('contactName').focus();
+      });
+    });
+
+    setupPlaceCombo(document.getElementById('origin'));
+    setupPlaceCombo(document.getElementById('destination'));
   </script>
 </body>
 </html>
