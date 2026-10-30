@@ -821,10 +821,18 @@
       );
     }
 
+    // Keeps only the address when anything else was pasted along with it
+    function cleanLink(raw) {
+      const url = raw.match(/https?:\/\/\S+/);
+      return url ? url[0] : raw.trim().split(/\s/)[0];
+    }
+
     function prepareMessage() {
       const origin      = document.getElementById('origin').value.trim();
       const destination = document.getElementById('destination').value.trim();
-      const link        = document.getElementById('link').value.trim();
+      const linkInput   = document.getElementById('link');
+      const link        = cleanLink(linkInput.value);
+      linkInput.value   = link;
 
       if (!origin || !destination) {
         shakeInvalid(!origin ? 'origin' : 'destination');
