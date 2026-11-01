@@ -42,6 +42,8 @@
       --send: #0B6B57;
       --send-deep: #08564A;
       --danger: #A61B1B;
+      --cold: #7FD6EE;
+      --meet: #F4B93C;
       --radius: 4px;
       --serif: 'Frank Ruhl Libre', 'David Libre', Georgia, serif;
       --sans: 'IBM Plex Sans Hebrew', 'Segoe UI', Arial, sans-serif;
@@ -134,8 +136,9 @@
     .field-group {
       position: relative;
       margin-bottom: 22px;
-      padding-inline-start: var(--rail-gutter);
     }
+
+    .route .field-group { padding-inline-start: var(--rail-gutter); }
 
     label {
       display: block;
@@ -363,7 +366,6 @@
       border: none;
       min-width: 0;
       margin-bottom: 22px;
-      padding-inline-start: var(--rail-gutter);
     }
 
     .contact legend {
@@ -411,11 +413,6 @@
       white-space: nowrap;
     }
 
-    /* Phone numbers need the full width on narrow phones */
-    @media (max-width: 419px) {
-      .contact { padding-inline-start: 0; }
-    }
-
     @media (max-width: 349px) {
       .contact-options { grid-template-columns: minmax(0, 1fr); }
     }
@@ -446,6 +443,160 @@
     }
 
     .contact-custom[hidden] { display: none; }
+
+    /* ─── TRANSPORT DETAILS ─── */
+    .choice {
+      border: none;
+      min-width: 0;
+      margin-bottom: 22px;
+    }
+
+    .choice legend {
+      padding: 0;
+      min-height: 32px;
+      font-size: 18px;
+      font-weight: 700;
+    }
+
+    .choice-options {
+      display: grid;
+      gap: 6px;
+    }
+
+    .cargo-options { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .cooling-options { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+
+    .choice-option {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      margin: 0;
+      padding: 10px 6px;
+      border: 1.5px solid var(--edge);
+      border-radius: var(--radius);
+      background: var(--white);
+      font-weight: 700;
+      line-height: 1.25;
+      text-align: center;
+      text-wrap: balance;
+      cursor: pointer;
+      transition: background-color 0.15s, border-color 0.15s, color 0.15s;
+    }
+
+    .cargo-options .choice-option {
+      min-height: 112px;
+      font-size: 16px;
+    }
+
+    .cooling-options .choice-option {
+      min-height: 72px;
+      font-size: 17px;
+    }
+
+    .choice-icon {
+      font-size: 34px;
+      line-height: 1;
+    }
+
+    .cooling-options .choice-icon,
+    .meeting-toggle .choice-icon { font-size: 22px; }
+
+    .choice-option input,
+    .meeting-toggle input {
+      position: absolute;
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    @media (hover: hover) {
+      .choice-option:hover { background: var(--ice-deep); }
+    }
+
+    .choice-option:has(input:checked) {
+      border-color: var(--brand);
+      background: var(--brand);
+      color: var(--white);
+    }
+
+    .choice-option.is-cold:has(input:checked) {
+      border-color: var(--ink);
+      background: var(--cold);
+      color: var(--ink);
+    }
+
+    .choice-option:has(input:focus-visible),
+    .meeting-toggle:has(input:focus-visible) {
+      outline: 3px solid var(--ink);
+      outline-offset: 2px;
+    }
+
+    .choice-error {
+      margin-top: 8px;
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--danger);
+    }
+
+    .choice-error[hidden] { display: none; }
+
+    .choice.is-missing .choice-option { border-color: var(--danger); }
+
+    .meeting { margin-bottom: 22px; }
+
+    .meeting-toggle {
+      position: relative;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-height: 72px;
+      padding: 10px 16px;
+      border: 1.5px solid var(--edge);
+      border-radius: var(--radius);
+      background: var(--white);
+      font-size: 17px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background-color 0.15s, border-color 0.15s;
+    }
+
+    @media (hover: hover) {
+      .meeting-toggle:hover { background: var(--ice-deep); }
+    }
+
+    .meeting-box {
+      flex-shrink: 0;
+      display: grid;
+      place-items: center;
+      width: 28px;
+      height: 28px;
+      border: 2px solid var(--ink);
+      border-radius: var(--radius);
+      background: var(--white);
+      font-size: 19px;
+      line-height: 1;
+      color: transparent;
+    }
+
+    .meeting-toggle:has(input:checked) {
+      border-color: var(--ink);
+      background: var(--meet);
+    }
+
+    .meeting-toggle:has(input:checked) .meeting-box {
+      background: var(--ink);
+      color: var(--white);
+    }
+
+    .meeting-place { margin-top: 14px; }
+
+    .meeting-place[hidden] { display: none; }
+
+    @media (max-width: 349px) {
+      .cargo-options .choice-option { font-size: 14px; }
+    }
 
     /* ─── BUTTONS ─── */
     .btn-generate,
@@ -639,6 +790,8 @@
       input[type="tel"],
       input[type="url"],
       .contact-option,
+      .choice-option,
+      .meeting-toggle,
       .btn-generate,
       .btn-generate-image,
       .btn-whatsapp,
@@ -671,6 +824,45 @@
         <section>
           <h2 class="card-title">יצירת הודעת גיוס</h2>
 
+          <fieldset class="choice" id="cargoChoice">
+            <legend>מה משנעים?</legend>
+            <div class="choice-options cargo-options">
+              <label class="choice-option">
+                <input type="radio" name="cargo" value="bag" />
+                <span class="choice-icon" aria-hidden="true">💉</span>
+                תיק עם זריקות
+              </label>
+              <label class="choice-option">
+                <input type="radio" name="cargo" value="tubes" />
+                <span class="choice-icon" aria-hidden="true">🧪</span>
+                מבחנות מח עצם
+              </label>
+              <label class="choice-option">
+                <input type="radio" name="cargo" value="carton" />
+                <span class="choice-icon" aria-hidden="true">📦</span>
+                קרטון ציוד
+              </label>
+            </div>
+            <p class="choice-error" role="alert" hidden>צריך לבחור מה משנעים</p>
+          </fieldset>
+
+          <fieldset class="choice" id="coolingChoice">
+            <legend>צריך קירור?</legend>
+            <div class="choice-options cooling-options">
+              <label class="choice-option is-cold">
+                <input type="radio" name="cooling" value="required" />
+                <span class="choice-icon" aria-hidden="true">❄️</span>
+                חייב קירור
+              </label>
+              <label class="choice-option">
+                <input type="radio" name="cooling" value="none" />
+                <span class="choice-icon" aria-hidden="true">🌡️</span>
+                לא חייב קירור
+              </label>
+            </div>
+            <p class="choice-error" role="alert" hidden>צריך לסמן אם חייב קירור</p>
+          </fieldset>
+
           <div class="route">
             <div class="field-group">
               <label for="origin">נקודת מקור</label>
@@ -684,6 +876,19 @@
               <div class="combo">
                 <input type="text" id="destination" placeholder="חיפוש עיר, מושב או קיבוץ" />
               </div>
+            </div>
+          </div>
+
+          <div class="meeting">
+            <label class="meeting-toggle">
+              <input type="checkbox" id="meetingToggle" />
+              <span class="meeting-box" aria-hidden="true">✓</span>
+              <span class="choice-icon" aria-hidden="true">🤝</span>
+              חבירה עם מתנדב
+            </label>
+            <div class="meeting-place" id="meetingPlaceWrap" hidden>
+              <label for="meetingPlace">איפה החבירה?</label>
+              <input type="text" id="meetingPlace" autocomplete="off" placeholder="למשל: צומת גלילות, תחנת הדלק" />
             </div>
           </div>
 
@@ -763,6 +968,9 @@
     let generatedMessage = '';
     let generatedLink = '';
     let generatedContactLine = '';
+    let generatedTitle = '';
+    let generatedFlags = '';
+    let generatedTransport = null;
     let generatedImageFile = null;
     let imagePreviewUrl = '';
     let imageRequestId = 0;
@@ -774,6 +982,17 @@
       heart: '\uD83E\uDDE1',
       clip:  '\uD83D\uDCCB',
       check: '\u2705',
+      syringe: '\ud83d\udc89',
+      box:   '\ud83d\udce6',
+      snow:  '\u2744\ufe0f',
+      thermo: '\ud83c\udf21\ufe0f',
+      meet:  '\ud83e\udd1d',
+    };
+
+    const CARGO = {
+      bag:    { label: 'תיק עם זריקות', icon: E.syringe, system: 'מערך השינוע מח עצם' },
+      tubes:  { label: 'מבחנות מח עצם', icon: E.tube,    system: 'מערך השינוע מבחנות מח עצם' },
+      carton: { label: 'קרטון ציוד',    icon: E.box,     system: 'מערך השינוע מח עצם' },
     };
 
     const CONTACTS = {
@@ -808,19 +1027,61 @@
       return { name, phone };
     }
 
-    const MESSAGE_TITLE = '🧪 *״מערך השינוע מבחנות מח עצם״* 🧪';
+    // Neither the cargo nor the cooling has a default: a wrong one would go out unnoticed
+    function requireChoice(fieldsetId, inputName) {
+      const fieldset = document.getElementById(fieldsetId);
+      const checked = document.querySelector('input[name="' + inputName + '"]:checked');
+      fieldset.classList.toggle('is-missing', !checked);
+      fieldset.querySelector('.choice-error').hidden = !!checked;
+      if (!checked) {
+        fieldset.querySelector('input').focus({ preventScroll: true });
+        fieldset.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+      return checked && checked.value;
+    }
+
+    function getTransport() {
+      const cargo = requireChoice('cargoChoice', 'cargo');
+      if (!cargo) return null;
+      const cooling = requireChoice('coolingChoice', 'cooling');
+      if (!cooling) return null;
+
+      const meeting = document.getElementById('meetingToggle').checked
+        ? document.getElementById('meetingPlace').value.trim()
+        : '';
+      if (document.getElementById('meetingToggle').checked && !meeting) {
+        shakeInvalid('meetingPlace');
+        return null;
+      }
+      return { cargo: CARGO[cargo], cold: cooling === 'required', meeting };
+    }
+
+    function buildTitle(transport) {
+      return transport.cargo.icon + ' *״' + transport.cargo.system + '״* ' + transport.cargo.icon;
+    }
+
+    function coolingText(transport) {
+      return transport.cold ? E.snow + ' חייב קירור' : E.thermo + ' לא חייב קירור';
+    }
+
+    function buildFlags(transport) {
+      return '*' + coolingText(transport) + '*' +
+        (transport.meeting ? '\n*' + E.meet + ' חבירה עם מתנדב: ' + transport.meeting + '*' : '');
+    }
 
     function buildContactLine(contact) {
       return '*' + E.phone + ' מי שיכול לקדם לאיזור שיעלה מול ' + contact.name + ' בוואטסאפ:*\n' + whatsAppLink(contact.phone);
     }
 
-    function buildMessage(origin, destination, link, contact) {
+    function buildMessage(origin, destination, link, contact, transport) {
+      const { label, icon } = transport.cargo;
       return (
-        MESSAGE_TITLE + '\n\n' +
-        'סוג אירוע: שינוע / מבחנת מח עצם\n' +
+        buildTitle(transport) + '\n\n' +
+        'סוג אירוע: שינוע / ' + label + '\n' +
         'מיקום: ' + origin + '\n' +
         (link ? link + '\n' : '') +
-        '\n*' + E.tube + ' שינוע מבחנת מח עצם ל' + destination + ' ' + E.tube + '*\n\n' +
+        '\n*' + icon + ' שינוע ' + label + ' ל' + destination + ' ' + icon + '*\n\n' +
+        buildFlags(transport) + '\n\n' +
         buildContactLine(contact)
       );
     }
@@ -838,6 +1099,9 @@
       const link        = cleanLink(linkInput.value);
       linkInput.value   = link;
 
+      const transport = getTransport();
+      if (!transport) return false;
+
       if (!origin || !destination) {
         shakeInvalid(!origin ? 'origin' : 'destination');
         return false;
@@ -849,9 +1113,12 @@
       rememberPlace(origin);
       rememberPlace(destination);
 
-      generatedMessage = buildMessage(origin, destination, link, contact);
+      generatedMessage = buildMessage(origin, destination, link, contact, transport);
       generatedLink = link;
       generatedContactLine = buildContactLine(contact);
+      generatedTitle = buildTitle(transport);
+      generatedFlags = buildFlags(transport);
+      generatedTransport = transport;
       document.getElementById('messageBox').textContent = generatedMessage;
 
       const waText = encodeURIComponent(generatedMessage);
@@ -955,6 +1222,9 @@
         place:     { font: `900 108px ${SERIF}`, lh: 128, color: '#0A3848' },
         bandLabel: { font: `600 48px ${SANS}`,  lh: 66,  color: '#FFFFFF' },
         bandPlace: { font: `900 108px ${SERIF}`, lh: 128, color: '#FFFFFF' },
+        cargo:     { font: `900 84px ${SERIF}`, lh: 104, color: '#0E4A5E' },
+        flag:      { font: `900 84px ${SERIF}`, lh: 104, color: '#13222B' },
+        flagLabel: { font: `700 48px ${SANS}`,  lh: 66,  color: '#13222B' },
       };
 
       // Canvas does not trigger font loading, so these weights must be requested explicitly.
@@ -973,6 +1243,8 @@
       const GAP = 34;
       const BAND_TOP = 52;
       const BAND_BOTTOM = 20;
+      const FLAG_TOP = 34;
+      const FLAG_BOTTOM = 26;
 
       const canvas = document.createElement('canvas');
       canvas.width = W;
@@ -984,8 +1256,10 @@
 
       // Parse each source line → {text, bold}, then word-wrap
       // The title and contact go in the text sent with the image, never on the image
+      // The cooling and meeting lines are drawn as their own blocks below
       const withoutContact = generatedMessage
-        .replace(MESSAGE_TITLE + '\n\n', '')
+        .replace(generatedTitle + '\n\n', '')
+        .replace('\n\n' + generatedFlags, '')
         .replace('\n\n' + generatedContactLine, '');
       const imageText = generatedLink
         ? withoutContact.replace(generatedLink + '\n', '').replace('\n' + generatedLink, '')
@@ -1021,25 +1295,36 @@
       const details = [];
       const origin = [];
       const band = [];
+      const { cargo, cold, meeting } = generatedTransport;
+      const destLabel = 'שינוע ' + cargo.label;
       for (const rawLine of imageText.split('\n')) {
         const text = rawLine.replace(/\*/g, '').trim();
         if (!text) continue;
 
+        const cargoMatch = text.match(/^(סוג אירוע: שינוע) \/ /);
         const originMatch = text.match(/^(מיקום:) (.+)$/);
-        const destMatch = text.replaceAll(E.tube, '').trim().match(/^(שינוע מבחנת מח עצם) (.+)$/);
-        if (originMatch) {
+        const destText = text.replaceAll(cargo.icon, '').trim();
+        if (cargoMatch) {
+          details.push(...wrap(cargoMatch[1], STYLES.label), ...wrap(cargo.icon + ' ' + cargo.label, STYLES.cargo));
+        } else if (originMatch) {
           origin.push(...wrap(originMatch[1], STYLES.label), ...wrap(originMatch[2], STYLES.place));
-        } else if (destMatch) {
-          band.push(...wrap(E.tube + ' ' + destMatch[1] + ' ' + E.tube, STYLES.bandLabel), ...wrap(destMatch[2], STYLES.bandPlace));
+        } else if (destText.startsWith(destLabel + ' ')) {
+          band.push(...wrap(cargo.icon + ' ' + destLabel + ' ' + cargo.icon, STYLES.bandLabel), ...wrap(destText.slice(destLabel.length + 1), STYLES.bandPlace));
         } else {
           details.push(...wrap(text, STYLES.detail));
         }
       }
 
+      const flags = [{ fill: cold ? '#7FD6EE' : '#DFEDF1', lines: wrap(coolingText(generatedTransport), STYLES.flag) }];
+      if (meeting) {
+        flags.push({ fill: '#F4B93C', lines: [...wrap(E.meet + ' חבירה עם מתנדב', STYLES.flagLabel), ...wrap(meeting, STYLES.flag)] });
+      }
+
       const blockH = lines => lines.reduce((sum, l) => sum + l.style.lh, 0);
       const bodyH = BODY_TOP + blockH(details) + (details.length && origin.length ? GAP : 0) + blockH(origin) + BODY_BOTTOM;
       const bandH = band.length ? BAND_TOP + blockH(band) + BAND_BOTTOM : 0;
-      canvas.height = bannerH + bodyH + bandH;
+      const flagH = flag => FLAG_TOP + blockH(flag.lines) + FLAG_BOTTOM;
+      canvas.height = bannerH + bodyH + bandH + flags.reduce((sum, flag) => sum + flagH(flag), 0);
 
       // ── Draw banner ──
       ctx.drawImage(imgBitmap, 0, 0, W, bannerH);
@@ -1073,6 +1358,15 @@
       drawLines(origin, detailsEnd + (details.length && origin.length ? GAP : 0));
       drawLines(band, bannerH + bodyH + BAND_TOP);
 
+      // Cooling and meeting blocks
+      let flagY = bannerH + bodyH + bandH;
+      for (const flag of flags) {
+        ctx.fillStyle = flag.fill;
+        ctx.fillRect(0, flagY, W, flagH(flag));
+        drawLines(flag.lines, flagY + FLAG_TOP);
+        flagY += flagH(flag);
+      }
+
       const finalBlob = await new Promise(resolve => canvas.toBlob(resolve, 'image/jpeg', 0.93));
       return new File([finalBlob], 'bone-marrow.jpg', { type: 'image/jpeg' });
     }
@@ -1084,7 +1378,7 @@
         const file = generatedImageFile || await renderMessageImage();
 
         if (navigator.canShare && navigator.canShare({ files: [file] })) {
-          await navigator.share({ files: [file], text: [MESSAGE_TITLE, generatedLink, generatedContactLine].filter(Boolean).join('\n\n') });
+          await navigator.share({ files: [file], text: [generatedTitle, generatedFlags, generatedLink, generatedContactLine].filter(Boolean).join('\n\n') });
           return;
         }
       } catch(e) {
@@ -1396,6 +1690,19 @@
         document.getElementById('contactCustom').hidden = !isCustom;
         if (isCustom) document.getElementById('contactName').focus();
       });
+    });
+
+    document.querySelectorAll('.choice input').forEach(radio => {
+      radio.addEventListener('change', () => {
+        const fieldset = radio.closest('.choice');
+        fieldset.classList.remove('is-missing');
+        fieldset.querySelector('.choice-error').hidden = true;
+      });
+    });
+
+    document.getElementById('meetingToggle').addEventListener('change', e => {
+      document.getElementById('meetingPlaceWrap').hidden = !e.target.checked;
+      if (e.target.checked) document.getElementById('meetingPlace').focus();
     });
 
     setupPlaceCombo(document.getElementById('origin'));
