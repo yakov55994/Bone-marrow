@@ -947,6 +947,19 @@
     }
 
     async function renderMessageImage() {
+      const SANS  = "'IBM Plex Sans Hebrew', Arial, sans-serif";
+      const SERIF = "'Frank Ruhl Libre', 'IBM Plex Sans Hebrew', Arial, serif";
+      const STYLES = {
+        detail:    { font: `600 48px ${SANS}`,  lh: 70,  color: '#13222B' },
+        label:     { font: `600 48px ${SANS}`,  lh: 66,  color: '#0E4A5E' },
+        place:     { font: `900 108px ${SERIF}`, lh: 128, color: '#0A3848' },
+        bandLabel: { font: `600 48px ${SANS}`,  lh: 66,  color: '#FFFFFF' },
+        bandPlace: { font: `900 108px ${SERIF}`, lh: 128, color: '#FFFFFF' },
+      };
+
+      // Canvas does not trigger font loading, so these weights must be requested explicitly.
+      // A failed font falls back to the next family rather than losing the image.
+      await Promise.all([...new Set(Object.values(STYLES).map(s => s.font))].map(f => document.fonts.load(f, 'א').catch(() => {})));
       await document.fonts.ready;
 
       const imgBlob = await fetch('image.jpeg').then(r => { if (!r.ok) throw new Error(); return r.blob(); });
@@ -955,8 +968,11 @@
       const W = 1080;
       const bannerH = Math.round(imgBitmap.height * (W / imgBitmap.width));
       const PAD = 64;
-      const FS  = 42;
-      const LH  = FS * 1.85;
+      const BODY_TOP = 6 + 52;
+      const BODY_BOTTOM = 24;
+      const GAP = 34;
+      const BAND_TOP = 52;
+      const BAND_BOTTOM = 20;
 
       const canvas = document.createElement('canvas');
       canvas.width = W;
@@ -975,51 +991,87 @@
         ? withoutContact.replace(generatedLink + '\n', '').replace('\n' + generatedLink, '')
         : withoutContact;
 
-      const parsed = [];
-      for (const rawLine of imageText.split('\n')) {
-        const bold = /\*/.test(rawLine);
-        const text = rawLine.replace(/\*/g, '');
-        ctx.font = `${bold ? 800 : 500} ${FS}px 'IBM Plex Sans Hebrew', Arial, sans-serif`;
-
-        if (!text.trim()) { parsed.push({ text: '', bold }); continue; }
-
-        const words = text.split(' ');
+      // Word-wraps one piece of text in the given style, scaling it down if a single word cannot fit
+      const wrap = (text, baseStyle) => {
+        ctx.font = baseStyle.font;
+        const widest = Math.max(...text.split(' ').map(w => ctx.measureText(w).width));
+        const scale = Math.min(1, (W - PAD * 2) / widest);
+        const style = scale === 1 ? baseStyle : {
+          ...baseStyle,
+          font: baseStyle.font.replace(/\d+px/, px => Math.floor(parseInt(px) * scale) + 'px'),
+          lh: Math.round(baseStyle.lh * scale),
+        };
+        ctx.font = style.font;
+        const lines = [];
         let cur = '';
-        for (const w of words) {
+        for (const w of text.split(' ')) {
           const test = cur ? cur + ' ' + w : w;
           if (ctx.measureText(test).width > W - PAD * 2 && cur) {
-            parsed.push({ text: cur, bold });
+            lines.push({ text: cur, style });
             cur = w;
           } else {
             cur = test;
           }
         }
-        if (cur) parsed.push({ text: cur, bold });
+        if (cur) lines.push({ text: cur, style });
+        return lines;
+      };
+
+      // Parse each source line: the origin and destination names get their own large lines
+      const details = [];
+      const origin = [];
+      const band = [];
+      for (const rawLine of imageText.split('\n')) {
+        const text = rawLine.replace(/\*/g, '').trim();
+        if (!text) continue;
+
+        const originMatch = text.match(/^(מיקום:) (.+)$/);
+        const destMatch = text.replaceAll(E.tube, '').trim().match(/^(שינוע מבחנת מח עצם) (.+)$/);
+        if (originMatch) {
+          origin.push(...wrap(originMatch[1], STYLES.label), ...wrap(originMatch[2], STYLES.place));
+        } else if (destMatch) {
+          band.push(...wrap(E.tube + ' ' + destMatch[1] + ' ' + E.tube, STYLES.bandLabel), ...wrap(destMatch[2], STYLES.bandPlace));
+        } else {
+          details.push(...wrap(text, STYLES.detail));
+        }
       }
 
-      const textH = parsed.length * LH + PAD * 2;
-      canvas.height = bannerH + textH;
+      const blockH = lines => lines.reduce((sum, l) => sum + l.style.lh, 0);
+      const bodyH = BODY_TOP + blockH(details) + (details.length && origin.length ? GAP : 0) + blockH(origin) + BODY_BOTTOM;
+      const bandH = band.length ? BAND_TOP + blockH(band) + BAND_BOTTOM : 0;
+      canvas.height = bannerH + bodyH + bandH;
 
       // ── Draw banner ──
       ctx.drawImage(imgBitmap, 0, 0, W, bannerH);
 
       // ── Text background ──
       ctx.fillStyle = '#EFF2F1';
-      ctx.fillRect(0, bannerH, W, textH);
+      ctx.fillRect(0, bannerH, W, bodyH);
 
       // Accent bar
       ctx.fillStyle = '#0A3848';
       ctx.fillRect(0, bannerH, W, 6);
 
+      // Destination band
+      ctx.fillRect(0, bannerH + bodyH, W, bandH);
+
       // ── Draw text lines ──
       ctx.textBaseline = 'top';
       ctx.direction    = 'rtl';
       ctx.textAlign    = 'right';
-      parsed.forEach(({ text, bold }, i) => {
-        ctx.font      = `${bold ? 800 : 500} ${FS}px 'IBM Plex Sans Hebrew', Arial, sans-serif`;
-        ctx.fillStyle = '#13222B';
-        ctx.fillText(text, W - PAD, bannerH + 6 + PAD + i * LH);
-      });
+      const drawLines = (lines, startY) => {
+        let y = startY;
+        for (const { text, style } of lines) {
+          ctx.font      = style.font;
+          ctx.fillStyle = style.color;
+          ctx.fillText(text, W - PAD, y);
+          y += style.lh;
+        }
+        return y;
+      };
+      const detailsEnd = drawLines(details, bannerH + BODY_TOP);
+      drawLines(origin, detailsEnd + (details.length && origin.length ? GAP : 0));
+      drawLines(band, bannerH + bodyH + BAND_TOP);
 
       const finalBlob = await new Promise(resolve => canvas.toBlob(resolve, 'image/jpeg', 0.93));
       return new File([finalBlob], 'bone-marrow.jpg', { type: 'image/jpeg' });
