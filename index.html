@@ -865,14 +865,14 @@
 
           <div class="route">
             <div class="field-group">
-              <label for="origin">נקודת מקור</label>
+              <label for="origin">איסוף מ:</label>
               <div class="combo">
                 <input type="text" id="origin" placeholder="חיפוש עיר, מושב או קיבוץ" />
               </div>
             </div>
 
             <div class="field-group">
-              <label for="destination">נקודת יעד</label>
+              <label for="destination">יעד סופי:</label>
               <div class="combo">
                 <input type="text" id="destination" placeholder="חיפוש עיר, מושב או קיבוץ" />
               </div>
@@ -887,7 +887,7 @@
               חבירה עם מתנדב
             </label>
             <div class="meeting-place" id="meetingPlaceWrap" hidden>
-              <label for="meetingPlace">איפה החבירה?</label>
+              <label for="meetingPlace">אפשרויות הורדה:</label>
               <input type="text" id="meetingPlace" autocomplete="off" placeholder="למשל: צומת גלילות, תחנת הדלק" />
             </div>
           </div>
@@ -966,7 +966,7 @@
   <script src="israel-localities.js"></script>
   <script>
     let generatedMessage = '';
-    let generatedLink = '';
+    let generatedLinkLine = '';
     let generatedContactLine = '';
     let generatedTitle = '';
     let generatedFlags = '';
@@ -1066,24 +1066,28 @@
 
     function buildFlags(transport) {
       return '*' + coolingText(transport) + '*' +
-        (transport.meeting ? '\n*' + E.meet + ' חבירה עם מתנדב: ' + transport.meeting + '*' : '');
+        (transport.meeting ? '\n*' + E.meet + ' חבירה עם מתנדב*\n*אפשרויות הורדה: ' + transport.meeting + '*' : '');
     }
 
     function buildContactLine(contact) {
       return '*' + E.phone + ' מי שיכול לקדם לאיזור שיעלה מול ' + contact.name + ' בוואטסאפ:*\n' + whatsAppLink(contact.phone);
     }
 
+    // WhatsApp cannot hide an address behind text, so the address stays visible under the prompt
+    function buildLinkLine(link) {
+      return link ? 'לפרטי הקריאה, לחץ כאן:\n' + link : '';
+    }
+
     function buildMessage(origin, destination, link, contact, transport) {
-      const { label, icon } = transport.cargo;
-      return (
-        buildTitle(transport) + '\n\n' +
-        'סוג אירוע: שינוע / ' + label + '\n' +
-        'מיקום: ' + origin + '\n' +
-        (link ? link + '\n' : '') +
-        '\n*' + icon + ' שינוע ' + label + ' ל' + destination + ' ' + icon + '*\n\n' +
-        buildFlags(transport) + '\n\n' +
-        buildContactLine(contact)
-      );
+      return [
+        buildTitle(transport),
+        'סוג אירוע: שינוע / ' + transport.cargo.label + '\n' +
+          'איסוף מ: ' + origin + '\n' +
+          '*יעד סופי: ' + destination + '*',
+        buildFlags(transport),
+        buildLinkLine(link),
+        buildContactLine(contact),
+      ].filter(Boolean).join('\n\n');
     }
 
     // Keeps only the address when anything else was pasted along with it
@@ -1114,7 +1118,7 @@
       rememberPlace(destination);
 
       generatedMessage = buildMessage(origin, destination, link, contact, transport);
-      generatedLink = link;
+      generatedLinkLine = buildLinkLine(link);
       generatedContactLine = buildContactLine(contact);
       generatedTitle = buildTitle(transport);
       generatedFlags = buildFlags(transport);
@@ -1219,11 +1223,11 @@
       const STYLES = {
         detail:    { font: `600 48px ${SANS}`,  lh: 70,  color: '#13222B' },
         label:     { font: `600 48px ${SANS}`,  lh: 66,  color: '#0E4A5E' },
-        place:     { font: `900 108px ${SERIF}`, lh: 128, color: '#0A3848' },
+        place:     { font: `900 72px ${SERIF}`, lh: 90, color: '#0A3848' },
         bandLabel: { font: `600 48px ${SANS}`,  lh: 66,  color: '#FFFFFF' },
-        bandPlace: { font: `900 108px ${SERIF}`, lh: 128, color: '#FFFFFF' },
-        cargo:     { font: `900 84px ${SERIF}`, lh: 104, color: '#0E4A5E' },
-        flag:      { font: `900 84px ${SERIF}`, lh: 104, color: '#13222B' },
+        bandPlace: { font: `900 72px ${SERIF}`, lh: 90, color: '#FFFFFF' },
+        cargo:     { font: `900 72px ${SERIF}`, lh: 90, color: '#0E4A5E' },
+        flag:      { font: `900 72px ${SERIF}`, lh: 90, color: '#13222B' },
         flagLabel: { font: `700 48px ${SANS}`,  lh: 66,  color: '#13222B' },
       };
 
@@ -1261,8 +1265,8 @@
         .replace(generatedTitle + '\n\n', '')
         .replace('\n\n' + generatedFlags, '')
         .replace('\n\n' + generatedContactLine, '');
-      const imageText = generatedLink
-        ? withoutContact.replace(generatedLink + '\n', '').replace('\n' + generatedLink, '')
+      const imageText = generatedLinkLine
+        ? withoutContact.replace('\n\n' + generatedLinkLine, '')
         : withoutContact;
 
       // Word-wraps one piece of text in the given style, scaling it down if a single word cannot fit
@@ -1296,20 +1300,19 @@
       const origin = [];
       const band = [];
       const { cargo, cold, meeting } = generatedTransport;
-      const destLabel = 'שינוע ' + cargo.label;
       for (const rawLine of imageText.split('\n')) {
         const text = rawLine.replace(/\*/g, '').trim();
         if (!text) continue;
 
         const cargoMatch = text.match(/^(סוג אירוע: שינוע) \/ /);
-        const originMatch = text.match(/^(מיקום:) (.+)$/);
-        const destText = text.replaceAll(cargo.icon, '').trim();
+        const originMatch = text.match(/^(איסוף מ:) (.+)$/);
+        const destMatch = text.match(/^(יעד סופי:) (.+)$/);
         if (cargoMatch) {
           details.push(...wrap(cargoMatch[1], STYLES.label), ...wrap(cargo.icon + ' ' + cargo.label, STYLES.cargo));
         } else if (originMatch) {
           origin.push(...wrap(originMatch[1], STYLES.label), ...wrap(originMatch[2], STYLES.place));
-        } else if (destText.startsWith(destLabel + ' ')) {
-          band.push(...wrap(cargo.icon + ' ' + destLabel + ' ' + cargo.icon, STYLES.bandLabel), ...wrap(destText.slice(destLabel.length + 1), STYLES.bandPlace));
+        } else if (destMatch) {
+          band.push(...wrap(destMatch[1], STYLES.bandLabel), ...wrap(destMatch[2], STYLES.bandPlace));
         } else {
           details.push(...wrap(text, STYLES.detail));
         }
@@ -1317,7 +1320,7 @@
 
       const flags = [{ fill: cold ? '#7FD6EE' : '#DFEDF1', lines: wrap(coolingText(generatedTransport), STYLES.flag) }];
       if (meeting) {
-        flags.push({ fill: '#F4B93C', lines: [...wrap(E.meet + ' חבירה עם מתנדב', STYLES.flagLabel), ...wrap(meeting, STYLES.flag)] });
+        flags.push({ fill: '#F4B93C', lines: [...wrap(E.meet + ' חבירה עם מתנדב, אפשרויות הורדה:', STYLES.flagLabel), ...wrap(meeting, STYLES.flag)] });
       }
 
       const blockH = lines => lines.reduce((sum, l) => sum + l.style.lh, 0);
@@ -1378,7 +1381,7 @@
         const file = generatedImageFile || await renderMessageImage();
 
         if (navigator.canShare && navigator.canShare({ files: [file] })) {
-          await navigator.share({ files: [file], text: [generatedTitle, generatedFlags, generatedLink, generatedContactLine].filter(Boolean).join('\n\n') });
+          await navigator.share({ files: [file], text: [generatedTitle, generatedFlags, generatedLinkLine, generatedContactLine].filter(Boolean).join('\n\n') });
           return;
         }
       } catch(e) {
